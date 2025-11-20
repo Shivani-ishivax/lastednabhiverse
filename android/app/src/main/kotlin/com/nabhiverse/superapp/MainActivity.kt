@@ -1,4 +1,4 @@
-package com.eventlycustomerapp
+package com.nabhiverse.superapp
 
 import io.flutter.embedding.android.FlutterActivity
 

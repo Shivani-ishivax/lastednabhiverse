@@ -253,12 +253,19 @@ class _ListOfCounterState extends State<ListOfCounter> {
                   Expanded(
                     child: InkWell(
                       onTap: () {
-                        if (preIndex != widget.index) {
-                          setState(() {
-                            
-                          });
-                        }
-                        
+                        print("fgghdfgfdghfdghfghjfghfghfj");
+                        // if (preIndex != widget.index) {
+                        //   setState(() {
+                        //
+                        //   });
+                        // }
+                        eventDetailsController.getEventTicketData(eventDetailsController.ticketInfo!.eventTypePrice[widget.index!].typeid.toString(),eventDetailsController.ticketInfo!.eventTypePrice[widget.index!].ticketType.toString(),eventDetailsController.ticketInfo!.eventTypePrice[widget.index!].ticketPrice.toString(),eventDetailsController.ticketInfo!.eventTypePrice[widget.index!].totalTicket.toString());
+                        double price = double.parse(
+                          eventDetailsController.ticketInfo!
+                              .eventTypePrice[widget.index!].ticketPrice,
+                        );
+
+                        eventDetailsController.increaseTicket(widget.index!, price);
                       },
                       child: Container(
                         alignment: Alignment.center,
@@ -278,7 +285,13 @@ class _ListOfCounterState extends State<ListOfCounter> {
                   Expanded(
                     child: InkWell(
                       onTap: () {
-                        
+                        double price = double.parse(
+                          eventDetailsController.ticketInfo!
+                              .eventTypePrice[widget.index!].ticketPrice,
+                        );
+
+                        eventDetailsController.decreaseTicket(widget.index!, price);
+
                       },
                       child: Container(
                         alignment: Alignment.center,

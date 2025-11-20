@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, library_private_types_in_public_api, unnecessary_new, unnecessary_null_comparison, prefer_const_literals_to_create_immutables, sort_child_properties_last, prefer_typing_uninitialized_variables
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -292,20 +293,34 @@ class _MyTicketScreenState extends State<MyTicketScreen>
                                     Container(
                                       height: 90,
                                       width: 90,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(15),
-                                        child: FadeInImage.assetNetwork(
-                                          placeholder:
-                                              "assets/ezgif.com-crop.gif",
-                                          image:
-                                              "${Config.imageUrl}${myBookingController.orderInfo?.orderData[index].eventImg}",
-                                          height: 90,
-                                          width: 90,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(15),
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                          "${Config.imageUrl}${myBookingController.orderInfo?.orderData[index].eventImg}",
+                                          httpHeaders: {
+                                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                            'Accept': 'image/*',
+                                            'Connection': 'keep-alive',
+                                          },
+                                          fit: BoxFit.cover,
+                                          height: 90,
+                                          width: 90,
+
+                                          // Placeholder (your GIF or loader)
+                                          placeholder: (context, url) => Image.asset(
+                                            "assets/ezgif.com-crop.gif",
+                                            fit: BoxFit.cover,
+                                            height: 90,
+                                            width: 90,
+                                          ),
+
+                                          // Error image
+                                          errorWidget: (context, url, error) => Icon(Icons.error),
+                                        ),
                                       ),
                                     ),
                                     SizedBox(

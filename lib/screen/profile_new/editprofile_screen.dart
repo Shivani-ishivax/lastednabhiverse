@@ -48,7 +48,7 @@ class _EditprofileScreenState extends State<EditprofileScreen> {
             height: screenHeight,
             child: ListView(
               shrinkWrap: true,
-              physics: BouncingScrollPhysics(),
+
               children: [
                 SizedBox(height: screenHeight * 0.02),
                 Container(

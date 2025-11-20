@@ -1,7 +1,10 @@
 // ignore_for_file: prefer_const_constructors, file_names, sort_child_properties_last, must_be_immutable
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:magicmate_user/utils/AppColors.dart';
+import 'package:magicmate_user/utils/ColorHelperClass.dart';
 
 import '../../Api/config.dart';
 import '../../controller/eventdetails_controller.dart';
@@ -65,7 +68,7 @@ class _OrganizerInformationState extends State<OrganizerInformation>
                     width: Get.size.width,
                     child: Column(
                       children: [
-                        SizedBox(height: Get.height * 0.047),
+                        SizedBox(height: Get.height * 0.07),
                         Row(
                           children: [
                             BackButton(
@@ -105,17 +108,28 @@ class _OrganizerInformationState extends State<OrganizerInformation>
                         height: 90,
                         width: 90,
                         padding: EdgeInsets.all(4),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(80),
-                          child: FadeInImage.assetNetwork(
-                            placeholder: "assets/ezgif.com-crop.gif",
-                            image: "${Config.imageUrl}${widget.orgImg}",
-                            placeholderFit: BoxFit.cover,
-                          ),
-                        ),
                         decoration: BoxDecoration(
                           color: WhiteColor,
                           shape: BoxShape.circle,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(80),
+                          child: CachedNetworkImage(
+                            imageUrl: "${Config.imageUrl}${widget.orgImg}",
+
+                            httpHeaders: {
+                              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                              'Accept': 'image/*',
+                              'Connection': 'keep-alive',
+                            },
+
+                            fit: BoxFit.cover,
+
+                            placeholder: (context, url) =>
+                                Image.asset("assets/ezgif.com-crop.gif", fit: BoxFit.cover),
+
+                            errorWidget: (context, url, error) => Icon(Icons.error),
+                          ),
                         ),
                       ),
                       Positioned(
@@ -440,15 +454,25 @@ class _OrganizerInformationState extends State<OrganizerInformation>
                                 alignment: Alignment.center,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(15),
-                                  child: FadeInImage.assetNetwork(
-                                    placeholder: "assets/ezgif.com-crop.gif",
+                                  child: CachedNetworkImage(
+                                    imageUrl: "${Config.imageUrl}${orgController.orgInfo?.orderData[index].eventImg ?? ""}",
+
+                                    httpHeaders: {
+                                      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                      'Accept': 'image/*',
+                                      'Connection': 'keep-alive',
+                                    },
+
                                     height: 120,
                                     width: 100,
-                                    placeholderCacheHeight: 120,
-                                    placeholderCacheWidth: 100,
-                                    image:
-                                        "${Config.imageUrl}${orgController.orgInfo?.orderData[index].eventImg}",
                                     fit: BoxFit.cover,
+
+                                    placeholder: (context, url) =>
+                                        Image.asset("assets/ezgif.com-crop.gif", fit: BoxFit.cover),
+
+                                    errorWidget: (context, url, error) => Icon(Icons.error, size: 35),
+
+                                    fadeInDuration: Duration(milliseconds: 400),
                                   ),
                                 ),
                               ),
@@ -511,9 +535,10 @@ class _OrganizerInformationState extends State<OrganizerInformation>
                                       children: [
                                         Image.asset(
                                           "assets/Location.png",
-                                          color: BlackColor,
+                                          color:  ColorHelperClass.getColorFromHex(ColorResources.primary_color),
                                           height: 15,
                                           width: 15,
+
                                         ),
                                         SizedBox(
                                           width: 210,

@@ -46,3 +46,4 @@ Color lightBlack = const Color(0xff73000000);
 Color lightBlack2 = const Color(0XFF636777);
 Color onoffColor = const Color(0xffE7E7E7);
 Color onoffColor2 = const Color(0xffE7E7E7);
+Color greytextbottom = const Color(0xE8F6EBC6);

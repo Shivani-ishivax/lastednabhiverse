@@ -1,5 +1,6 @@
 // ignore_for_file: sort_child_properties_last, prefer_const_constructors, must_be_immutable
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -88,19 +89,31 @@ class _LatestEventState extends State<LatestEvent> {
                                   height: 140,
                                   width: 130,
                                   margin: EdgeInsets.all(10),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: FadeInImage.assetNetwork(
-                                      fadeInCurve: Curves.easeInCirc,
-                                      placeholder: "assets/ezgif.com-crop.gif",
-                                      height: 140,
-                                      image:
-                                          "${Config.imageUrl}${homePageController.homeInfo?.homeData.latestEvent[index].eventImg ?? ""}",
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                      "${Config.imageUrl}${homePageController.homeInfo?.homeData.latestEvent[index].eventImg ?? ""}",
+
+                                      httpHeaders: {
+                                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                        'Accept': 'image/*',
+                                        'Connection': 'keep-alive',
+                                      },
+
+                                      height: 140,
+                                      fit: BoxFit.cover,
+
+                                      placeholder: (context, url) =>
+                                          Image.asset("assets/ezgif.com-crop.gif", fit: BoxFit.cover),
+
+                                      errorWidget: (context, url, error) => Icon(Icons.error, size: 40),
+
+                                      fadeInDuration: Duration(milliseconds: 400),
+                                    ),
                                   ),
                                 ),
                                 Expanded(
@@ -255,27 +268,37 @@ class _LatestEventState extends State<LatestEvent> {
                                 margin: EdgeInsets.all(10),
                                 child: Row(
                                   children: [
-                                    Container(
+                                  Container(
+                                  height: 140,
+                                  width: 130,
+                                  margin: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                      "${Config.imageUrl}${homePageController.homeInfo?.homeData.thisMonthEvent[index].eventImg ?? ""}",
+
+                                      httpHeaders: {
+                                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                        'Accept': 'image/*',
+                                        'Connection': 'keep-alive',
+                                      },
+
                                       height: 140,
-                                      width: 130,
-                                      margin: EdgeInsets.all(10),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(15),
-                                        child: FadeInImage.assetNetwork(
-                                          fadeInCurve: Curves.easeInCirc,
-                                          placeholder:
-                                              "assets/ezgif.com-crop.gif",
-                                          height: 140,
-                                          image:
-                                              "${Config.imageUrl}${homePageController.homeInfo?.homeData.thisMonthEvent[index].eventImg ?? ""}",
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
+                                      fit: BoxFit.cover,
+
+                                      placeholder: (context, url) =>
+                                          Image.asset("assets/ezgif.com-crop.gif", fit: BoxFit.cover),
+
+                                      errorWidget: (context, url, error) => Icon(Icons.error, size: 40),
+
+                                      fadeInDuration: Duration(milliseconds: 400),
                                     ),
-                                    Expanded(
+                                  ),
+                                ), Expanded(
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -431,22 +454,31 @@ class _LatestEventState extends State<LatestEvent> {
                                           height: 140,
                                           width: 130,
                                           margin: EdgeInsets.all(10),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            child: FadeInImage.assetNetwork(
-                                              fadeInCurve: Curves.easeInCirc,
-                                              placeholder:
-                                                  "assets/ezgif.com-crop.gif",
-                                              height: 140,
-                                              image:
-                                                  "${Config.imageUrl}${homePageController.homeInfo?.homeData.nearbyEvent[index].eventImg ?? ""}",
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
                                           decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(15),
+                                            child: CachedNetworkImage(
+                                              imageUrl:
+                                              "${Config.imageUrl}${homePageController.homeInfo?.homeData.nearbyEvent[index].eventImg ?? ""}",
+
+                                              httpHeaders: {
+                                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                                'Accept': 'image/*',
+                                                'Connection': 'keep-alive',
+                                              },
+
+                                              height: 140,
+                                              fit: BoxFit.cover,
+
+                                              placeholder: (context, url) =>
+                                                  Image.asset("assets/ezgif.com-crop.gif", fit: BoxFit.cover),
+
+                                              errorWidget: (context, url, error) => Icon(Icons.error, size: 40),
+
+                                              fadeInDuration: Duration(milliseconds: 400),
+                                            ),
                                           ),
                                         ),
                                         Expanded(

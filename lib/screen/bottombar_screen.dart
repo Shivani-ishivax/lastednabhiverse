@@ -183,8 +183,8 @@ class _BottomBarScreenState extends State<BottomBarScreen> with WidgetsBindingOb
         bottomNavigationBar: GetBuilder<LoginControllerssss>(builder: (context) {
           return BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            unselectedItemColor: greyColor,
-            // backgroundColor: BlackColor,
+            unselectedItemColor: greytextbottom,
+             backgroundColor: BlackColor,
             elevation: 0,
             selectedLabelStyle: const TextStyle(
                 fontFamily: 'Gilroy Bold',
@@ -202,7 +202,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> with WidgetsBindingOb
               BottomNavigationBarItem(
                 icon: Image.asset(
                   "assets/home-dash.png",
-                  color: selectedIndex == 0 ? ColorHelperClass.getColorFromHex(ColorResources.primary_color) : greytext,
+                  color: selectedIndex == 0 ? ColorHelperClass.getColorFromHex(ColorResources.primary_color) : greytextbottom,
                   height: Get.size.height / 35,
                 ),
                 label: 'Home'.tr,
@@ -210,7 +210,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> with WidgetsBindingOb
               BottomNavigationBarItem(
                 icon: Image.asset(
                   "assets/Love.png",
-                  color: selectedIndex == 1 ? ColorHelperClass.getColorFromHex(ColorResources.primary_color) : greytext,
+                  color: selectedIndex == 1 ? ColorHelperClass.getColorFromHex(ColorResources.primary_color) : greytextbottom,
                   height: Get.size.height / 35,
                 ),
                 label: 'Favorite'.tr,
@@ -218,7 +218,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> with WidgetsBindingOb
               BottomNavigationBarItem(
                 icon: Image.asset(
                   "assets/Ticket.png",
-                  color: selectedIndex == 2 ?ColorHelperClass.getColorFromHex(ColorResources.primary_color) : greytext,
+                  color: selectedIndex == 2 ?ColorHelperClass.getColorFromHex(ColorResources.primary_color) : greytextbottom,
                   height: Get.size.height / 35,
                 ),
                 label: 'Ticket'.tr,
@@ -226,7 +226,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> with WidgetsBindingOb
               BottomNavigationBarItem(
                 icon: Image.asset(
                   "assets/Profile.png",
-                  color: selectedIndex == 3 ?ColorHelperClass.getColorFromHex(ColorResources.primary_color) : greytext,
+                  color: selectedIndex == 3 ?ColorHelperClass.getColorFromHex(ColorResources.primary_color) : greytextbottom,
                   height: Get.size.height / 35,
                 ),
                 label: 'Profile'.tr,

@@ -3,11 +3,13 @@
 import 'dart:io';
 import 'dart:ui' as ui;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
+import 'package:magicmate_user/Api/config.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -76,10 +78,10 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
                   },
                 )
               : myBookingController.status == "Past"
-                  ? myBookingController.myTicketInfo?.ticketData.ticketRate !=
+                  ? myBookingController.myTicketInfo?.ticketData?.ticketRate !=
                               "1" &&
                           myBookingController
-                                  .myTicketInfo?.ticketData.ticketStatus !=
+                                  .myTicketInfo!.ticketData!.ticketStatus !=
                               "Cancelled"
                       ? GestButton(
                           height: 50,
@@ -105,6 +107,7 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
         height: Get.size.height,
         width: Get.size.width,
         child: GetBuilder<MyBookingController>(builder: (context) {
+
           return myBookingController.isLoading
               ? SingleChildScrollView(
                   child: RepaintBoundary(
@@ -127,13 +130,30 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
                                   height: 8,
                                 ),
                                 Center(
-                                  child: FadeInImage.assetNetwork(
-                                    placeholder: "assets/ezgif.com-crop.gif",
-                                    image:
-                                        "${myBookingController.myTicketInfo?.ticketData.qrcode}",
+                                  child: CachedNetworkImage(
+                                    imageUrl: "${Config.imageUrl}${myBookingController.myTicketInfo?.ticketData?.qrcode}",
+                                    httpHeaders: {
+                                      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                      'Accept': 'image/*',
+                                      'Connection': 'keep-alive',
+                                    },
                                     height: 150,
                                     width: 150,
                                     fit: BoxFit.fill,
+
+                                    placeholder: (context, url) => Image.asset(
+                                      "assets/ezgif.com-crop.gif",
+                                      height: 150,
+                                      width: 150,
+                                      fit: BoxFit.fill,
+                                    ),
+
+                                    errorWidget: (context, url, error) => Image.asset(
+                                      "assets/ezgif.com-crop.gif",
+                                      height: 150,
+                                      width: 150,
+                                      fit: BoxFit.fill,
+                                    ),
                                   ),
                                 ),
                                 Center(
@@ -145,7 +165,7 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
                                       ),
                                       Text(
                                         myBookingController.myTicketInfo
-                                                ?.ticketData.uniqueCode ??
+                                                ?.ticketData?.uniqueCode ??
                                             "",
                                         style: TextStyle(
                                           fontFamily: FontFamily.gilroyMedium,
@@ -163,7 +183,7 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
                                               text: myBookingController
                                                       .myTicketInfo
                                                       ?.ticketData
-                                                      .uniqueCode ??
+                                                      ?.uniqueCode ??
                                                   "",
                                             ),
                                           );
@@ -194,7 +214,7 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
                                 ),
                                 Text(
                                   myBookingController.myTicketInfo?.ticketData
-                                          .ticketTitle ??
+                                          ?.ticketTitle ??
                                       "",
                                   style: TextStyle(
                                     color: BlackColor,
@@ -218,7 +238,7 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
                                 ),
                                 Text(
                                   myBookingController
-                                          .myTicketInfo?.ticketData.startTime ??
+                                          .myTicketInfo?.ticketData?.startTime ??
                                       "",
                                   style: TextStyle(
                                     color: BlackColor,
@@ -242,7 +262,7 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
                                 ),
                                 Text(
                                   myBookingController.myTicketInfo?.ticketData
-                                          .eventAddressTitle ??
+                                          ?.eventAddressTitle ??
                                       "",
                                   style: TextStyle(
                                     color: BlackColor,
@@ -266,7 +286,7 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
                                 ),
                                 Text(
                                   myBookingController.myTicketInfo?.ticketData
-                                          .sponsoreTitle ??
+                                          ?.sponsoreTitle ??
                                       "",
                                   style: TextStyle(
                                     color: BlackColor,
@@ -292,68 +312,68 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
                                 ticketText(
                                     title: "Full Name".tr,
                                     subtitle: myBookingController.myTicketInfo
-                                        ?.ticketData.ticketUsername),
+                                        ?.ticketData?.ticketUsername),
                                 ticketText(
                                     title: "Phone".tr,
                                     subtitle: myBookingController
-                                        .myTicketInfo?.ticketData.ticketMobile),
+                                        .myTicketInfo?.ticketData?.ticketMobile),
                                 ticketText(
                                     title: "Email".tr,
                                     subtitle: myBookingController
-                                        .myTicketInfo?.ticketData.ticketEmail),
+                                        .myTicketInfo?.ticketData?.ticketEmail),
                                 ticketText(
                                     title:
-                                        "${myBookingController.myTicketInfo?.ticketData.totalTicket} ${"Seats".tr}",
+                                        "${myBookingController.myTicketInfo?.ticketData?.totalTicket} ${"Seats".tr}",
                                     subtitle:
-                                        "${currency}${myBookingController.myTicketInfo?.ticketData.ticketSubtotal}"),
+                                        "${currency}${myBookingController.myTicketInfo?.ticketData?.ticketSubtotal}"),
                                 ticketText(
                                     title: "Tax".tr,
                                     subtitle:
-                                        "${currency}${myBookingController.myTicketInfo?.ticketData.ticketTax}"),
+                                        "${currency}${myBookingController.myTicketInfo?.ticketData?.ticketTax}"),
                                 myBookingController.myTicketInfo?.ticketData
-                                            .ticketCouAmt !=
+                                            ?.ticketCouAmt !=
                                         "0"
                                     ? ticketText(
                                         title: "Coupon".tr,
                                         subtitle:
-                                            "${currency}${myBookingController.myTicketInfo?.ticketData.ticketCouAmt}")
+                                            "${currency}${myBookingController.myTicketInfo?.ticketData?.ticketCouAmt}")
                                     : SizedBox(),
                                 myBookingController.myTicketInfo?.ticketData
-                                            .ticketWallAmt !=
+                                            ?.ticketWallAmt !=
                                         "0"
                                     ? ticketText(
                                         title: "Wallet".tr,
                                         subtitle:
-                                            "${currency}${myBookingController.myTicketInfo?.ticketData.ticketWallAmt}")
+                                            "${currency}${myBookingController.myTicketInfo?.ticketData?.ticketWallAmt}")
                                     : SizedBox(),
                                 ticketText(
                                     title: "Total".tr,
                                     subtitle: currency +
                                         myBookingController.myTicketInfo
-                                            ?.ticketData.ticketTotalAmt),
+                                            ?.ticketData?.ticketTotalAmt),
                                 ticketText(
                                     title: "Payment Method".tr,
                                     subtitle: myBookingController.myTicketInfo
-                                        ?.ticketData.ticketPMethod),
-                                myBookingController.myTicketInfo?.ticketData
-                                            .ticketTransactionId !=
+                                        ?.ticketData?.ticketPMethod),
+                                myBookingController.myTicketInfo!.ticketData
+                                            ?.ticketTransactionId !=
                                         "0"
                                     ? ticketText(
                                         title: "Transaction ID".tr,
                                         subtitle: myBookingController
                                             .myTicketInfo
                                             ?.ticketData
-                                            .ticketTransactionId)
+                                            ?.ticketTransactionId)
                                     : SizedBox(),
                                 myBookingController.myTicketInfo?.ticketData
-                                            .ticketStatus ==
+                                            ?.ticketStatus ==
                                         "Cancelled"
                                     ? ticketText(
                                         title: "Ticket Status".tr,
                                         subtitle: myBookingController
                                             .myTicketInfo
                                             ?.ticketData
-                                            .ticketStatus)
+                                            ?.ticketStatus)
                                     : SizedBox(),
                               ],
                             ),
@@ -616,7 +636,7 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
                     onTap: () {
                       myBookingController.orderReviewApi(
                           orderID: myBookingController
-                              .myTicketInfo?.ticketData.ticketId);
+                              .myTicketInfo?.ticketData?.ticketId);
                     },
                     child: Container(
                       height: 50,

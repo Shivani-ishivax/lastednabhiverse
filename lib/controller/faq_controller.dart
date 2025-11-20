@@ -4,6 +4,8 @@ import 'dart:convert';
 
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:http/http.dart' as http;
+import 'package:magicmate_user/model/login/LoginUser.dart';
+import 'package:magicmate_user/screen/utils/SessionData.dart';
 
 import '../Api/config.dart';
 import '../Api/data_store.dart';
@@ -15,8 +17,10 @@ class FaqController extends GetxController implements GetxService {
 
   getFaqDataApi() async {
     try {
+      LoginUser? userData = await SessionManager.getSession();
+      print('User ID: ${userData?.loginid.toString()}');
       Map map = {
-        "uid": getData.read("UserLogin")["id"].toString(),
+        "uid":userData?.loginid.toString(),
       };
       Uri uri = Uri.parse(Config.baseurl + Config.faqApi);
       var response = await http.post(

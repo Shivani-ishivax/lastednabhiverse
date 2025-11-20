@@ -8,6 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:magicmate_user/model/login/LoginUser.dart';
+import 'package:magicmate_user/screen/utils/SessionData.dart';
+import 'package:magicmate_user/screen/utils/Urls.dart';
 
 import '../Api/config.dart';
 import '../Api/data_store.dart';
@@ -44,14 +47,48 @@ class HomePageController extends GetxController implements GetxService {
   }
 
   HomePageController() {
-    getHomeDataApi();
+    getDynamicUrl();
+
+  }
+  //event url
+
+
+
+
+  void getDynamicUrl() async {
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Connection': 'keep-alive',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+
+    };
+    Uri uri = Uri.parse(AppUrls.eventapp_url);
+    var response = await http.get(
+      uri,
+      headers: headers,
+
+    );
+    print(uri);
+
+    print("::::::::::________::::::::::" + response.body.toString());
+    if (response.statusCode == 200) {
+      var result = jsonDecode(response.body);
+      print(":::RR:::::::________::::::::::" + result.toString());
+      Config.imageUrl = result['data']['url'].toString();
+      Config.razorpaykey = result['data']['razorpay_key'].toString();
+      print("gdfgdgyuyyudf${Config.imageUrl}");
+      getHomeDataApi();
+    }
   }
 
   getHomeDataApi() async {
     try {
+      LoginUser? userData = await SessionManager.getSession();
+      print('User ID: ${userData?.loginid.toString()}');
+
       Map map = {
-        "uid": getData.read("UserLogin") != null ? getData.read("UserLogin")["id"] : "0",
-        //shivani commit
+        "uid": userData?.loginid.toString(),
         "lats": "26.912434",
         "longs": "75.787270",
       };

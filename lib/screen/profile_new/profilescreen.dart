@@ -56,7 +56,7 @@ class _ProfilescreenState extends State<Profilescreen> {
                 height: screenHeight,
                 child: ListView(
               shrinkWrap: true,
-              physics: BouncingScrollPhysics(),
+
               children: [
                 SizedBox(height: screenHeight * 0.02),
                 // Container(
@@ -94,8 +94,6 @@ class _ProfilescreenState extends State<Profilescreen> {
                     ],
                   ),
                 ),
-
-
 
                 Container(
                   margin: EdgeInsets.only(top: screenHeight*0.068,left: 5,),
@@ -351,7 +349,7 @@ class _ProfilescreenState extends State<Profilescreen> {
                                                style: TextStyleClass.textcolorstyle2(context, screenWidth * 0.045, ColorHelperClass.getColorFromHex(ColorResources.whitecolor),0.0,FontWeight.w500)
                                            ),
                                            SizedBox(height: screenHeight * 0.007),
-                                           Text("Delete my according",
+                                           Text("Delete my account",
                                                textAlign: TextAlign.center,
                                                style: TextStyleClass.textcolorstyle2(context, screenWidth * 0.029, ColorHelperClass.getColorFromHex(ColorResources.text5color),0.0,FontWeight.w400)
                                            ),
@@ -374,7 +372,7 @@ class _ProfilescreenState extends State<Profilescreen> {
                           ],
                         ),
                       ),
-                      SizedBox(height: screenHeight * 0.03),
+                      //SizedBox(height: screenHeight * 0.03),
 
 
                     ],

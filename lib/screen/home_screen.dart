@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -78,11 +79,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   networkimageconvert() {
     (() async {
-      http.Response response =
-          await http.get(
-              Uri.parse(Config.imageUrl + networkimage.toString(),
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
 
-          ));
+      };
+      http.Response response =
+          await http.get(Uri.parse(Config.imageUrl + networkimage.toString(),
+
+
+          ),headers: headers
+          );
       if (mounted) {
         print(response.bodyBytes);
         setState(() {
@@ -254,10 +263,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                           alignment: Alignment.center,
                                           child: Row(
                                             children: [
-                                              Image.network(
-                                                "${Config.imageUrl}${homePageController.homeInfo?.homeData.catlist[index].catImg}",
+                                              CachedNetworkImage(
+                                                imageUrl:"${Config.imageUrl}${homePageController.homeInfo?.homeData.catlist[index].catImg}",
+                                                httpHeaders: {
+                                                  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                                  'Accept': 'image/*',
+                                                  'Connection': 'keep-alive',
+                                                },
                                                 height: 20,
                                                 width: 20,
+                                                placeholder: (context, url) => SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                                ),
                                               ),
                                               SizedBox(
                                                 width: 4,
@@ -409,26 +428,36 @@ class _HomeScreenState extends State<HomeScreen> {
                                             BorderRadius.circular(30),
                                         child: Stack(
                                           children: [
-                                            SizedBox(
-                                              height: 320,
-                                              width: 240,
-                                              child: FadeInImage.assetNetwork(
-                                                fadeInCurve:
-                                                    Curves.easeInCirc,
-                                                placeholder:
-                                                    "assets/ezgif.com-crop.gif",
-                                                height: 320,
-                                                width: 240,
-                                                placeholderCacheHeight: 320,
-                                                placeholderCacheWidth: 240,
-                                                placeholderFit: BoxFit.fill,
-                                                // placeholderScale: 1.0,
-                                                image:
-                                                    "${Config.imageUrl}${homePageController.homeInfo?.homeData.latestEvent[index].eventImg}",
-                                                fit: BoxFit.cover,
-                                              ),
+                                          SizedBox(
+                                          height: 320,
+                                          width: 240,
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                            "${Config.imageUrl}${homePageController.homeInfo?.homeData.latestEvent[index].eventImg}",
 
+                                            httpHeaders: {
+                                              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                              'Accept': 'image/*',
+                                              'Connection': 'keep-alive',
+                                            },
+
+                                            fit: BoxFit.cover,
+                                            width: 240,
+                                            height: 320,
+
+                                            placeholder: (context, url) => Image.asset(
+                                              "assets/ezgif.com-crop.gif",
+                                              fit: BoxFit.fill,
+                                              width: 240,
+                                              height: 320,
                                             ),
+
+                                            errorWidget: (context, url, error) => Icon(Icons.error, size: 40),
+
+                                            fadeInDuration: Duration(milliseconds: 400),
+                                            fadeOutDuration: Duration(milliseconds: 200),
+                                          ),
+                                        ),
                                             Container(
                                               decoration: BoxDecoration(
                                                 gradient: LinearGradient(
@@ -446,6 +475,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 //border: Border.all(color: lightgrey),
                                               ),
                                             ),
+
                                             Positioned(
                                               bottom: 5,
                                               child: Padding(
@@ -660,25 +690,39 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: Column(
                                         // mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Container(
-                                            height: Get.height / 4.9,
+                                      Container(
+                                      height: Get.height / 5.4,
+                                        width: Get.width / 1.4,
+                                        margin: EdgeInsets.all(5),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                            "${Config.imageUrl}${homePageController.homeInfo?.homeData.nearbyEvent[index].eventImg ?? ""}",
+
+                                            httpHeaders: {
+                                              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                              'Accept': 'image/*',
+                                              'Connection': 'keep-alive',
+                                            },
+
+                                            fit: BoxFit.cover,
                                             width: Get.width / 1.4,
-                                            margin: EdgeInsets.all(5),
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              child: FadeInImage.assetNetwork(
-                                                placeholder:
-                                                    "assets/ezgif.com-crop.gif",
-                                                height: Get.height / 4.9,
-                                                width: Get.width / 1.4,
-                                                image:
-                                                    "${Config.imageUrl}${homePageController.homeInfo?.homeData.nearbyEvent[index].eventImg ?? ""}",
-                                                fit: BoxFit.cover,
-                                              ),
+                                            height: Get.height / 4.9,
+
+                                            placeholder: (context, url) => Image.asset(
+                                              "assets/ezgif.com-crop.gif",
+                                              fit: BoxFit.cover,
                                             ),
+
+                                            errorWidget: (context, url, error) => Icon(Icons.error, size: 40),
+
+                                            fadeInDuration: Duration(milliseconds: 400),
                                           ),
-                                          Container(
+                                        ),
+                                      ),
+
+                                      Container(
                                             height: 65,
                                             width: Get.size.width,
                                             padding: EdgeInsets.symmetric(
@@ -884,25 +928,39 @@ class _HomeScreenState extends State<HomeScreen> {
                                           EdgeInsets.symmetric(horizontal: 8),
                                       child: Column(
                                         children: [
-                                          Container(
-                                            height: Get.height / 4.9,
+                                      Container(
+                                      height: Get.height / 5.2,
+                                        width: Get.width / 1.4,
+                                        margin: EdgeInsets.all(5),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                            "${Config.imageUrl}${homePageController.homeInfo?.homeData.thisMonthEvent[index].eventImg ?? ""}",
+
+                                            httpHeaders: {
+                                              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                              'Accept': 'image/*',
+                                              'Connection': 'keep-alive',
+                                            },
+
+                                            fit: BoxFit.cover,
                                             width: Get.width / 1.4,
-                                            margin: EdgeInsets.all(5),
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              child: FadeInImage.assetNetwork(
-                                                placeholder:
-                                                    "assets/ezgif.com-crop.gif",
-                                                height: Get.height / 4.9,
-                                                width: Get.width / 1.4,
-                                                image:
-                                                    "${Config.imageUrl}${homePageController.homeInfo?.homeData.thisMonthEvent[index].eventImg ?? ""}",
-                                                fit: BoxFit.cover,
-                                              ),
+                                            height: Get.height / 4.9,
+
+                                            placeholder: (context, url) => Image.asset(
+                                              "assets/ezgif.com-crop.gif",
+                                              fit: BoxFit.cover,
                                             ),
+
+                                            errorWidget: (context, url, error) => Icon(Icons.error, size: 40),
+
+                                            fadeInDuration: Duration(milliseconds: 400),
                                           ),
-                                          Container(
+                                        ),
+                                      ),
+
+                                      Container(
                                             height: 65,
                                             width: Get.size.width,
                                             alignment: Alignment.center,
@@ -1131,18 +1189,29 @@ class _HomeScreenState extends State<HomeScreen> {
                                           margin: EdgeInsets.all(8),
                                           alignment: Alignment.center,
                                           child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            child: FadeInImage.assetNetwork(
-                                              placeholder:
-                                                  "assets/ezgif.com-crop.gif",
+                                            borderRadius: BorderRadius.circular(15),
+                                            child: CachedNetworkImage(
+                                              imageUrl:
+                                              "${Config.imageUrl}${homePageController.homeInfo?.homeData.upcomingEvent[index].eventImg}",
+
+                                              httpHeaders: {
+                                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                                'Accept': 'image/*',
+                                                'Connection': 'keep-alive',
+                                              },
+
                                               height: 120,
                                               width: 100,
-                                              placeholderCacheHeight: 120,
-                                              placeholderCacheWidth: 100,
-                                              image:
-                                                  "${Config.imageUrl}${homePageController.homeInfo?.homeData.upcomingEvent[index].eventImg}",
                                               fit: BoxFit.cover,
+
+                                              placeholder: (context, url) => Image.asset(
+                                                "assets/ezgif.com-crop.gif",
+                                                height: 120,
+                                                width: 100,
+                                                fit: BoxFit.cover,
+                                              ),
+
+                                              errorWidget: (context, url, error) => Icon(Icons.error, size: 40),
                                             ),
                                           ),
                                         ),

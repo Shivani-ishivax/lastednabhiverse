@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -81,9 +82,25 @@ class _CatWiseEventState extends State<CatWiseEvent> {
                       bottomLeft: Radius.circular(25),
                       bottomRight: Radius.circular(25),
                     ),
-                    child: Image.network(
-                      Config.imageUrl + img,
+                    child: CachedNetworkImage(
+                      imageUrl: Config.imageUrl + img,
+
+                      httpHeaders: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                        'Accept': 'image/*',
+                        'Connection': 'keep-alive',
+                      },
+
                       fit: BoxFit.cover,
+
+                      placeholder: (context, url) => Container(
+                        color: Colors.grey.shade300,
+                        child: Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+
+                      errorWidget: (context, url, error) => Icon(Icons.error, size: 40),
                     ),
                   ),
                   decoration: BoxDecoration(
@@ -133,15 +150,25 @@ class _CatWiseEventState extends State<CatWiseEvent> {
                                   alignment: Alignment.center,
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(15),
-                                    child: FadeInImage.assetNetwork(
-                                      placeholder: "assets/ezgif.com-crop.gif",
+                                    child: CachedNetworkImage(
+                                      imageUrl: "${Config.imageUrl}${eventDetailsController.catWiseInfo[index].eventImg ?? ""}",
+
+                                      httpHeaders: {
+                                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                        'Accept': 'image/*',
+                                        'Connection': 'keep-alive',
+                                      },
+
                                       height: 120,
                                       width: 100,
-                                      placeholderCacheHeight: 120,
-                                      placeholderCacheWidth: 100,
-                                      image:
-                                          "${Config.imageUrl}${eventDetailsController.catWiseInfo[index].eventImg}",
                                       fit: BoxFit.cover,
+
+                                      placeholder: (context, url) =>
+                                          Image.asset("assets/ezgif.com-crop.gif", fit: BoxFit.cover),
+
+                                      errorWidget: (context, url, error) => Icon(Icons.error, size: 35),
+
+                                      fadeInDuration: Duration(milliseconds: 400),
                                     ),
                                   ),
                                 ),

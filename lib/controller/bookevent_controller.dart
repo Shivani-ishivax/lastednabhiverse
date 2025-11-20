@@ -4,6 +4,8 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:magicmate_user/model/login/LoginUser.dart';
+import 'package:magicmate_user/screen/utils/SessionData.dart';
 
 import '../Api/config.dart';
 import '../Api/data_store.dart';
@@ -29,11 +31,19 @@ class BookEventController extends GetxController implements GetxService {
     sponsoreId,
   }) async {
     try {
-      if(wallAmt==0.0){
-        wallAmt=0;
-      }
+      // if(wallAmt==0.0){
+      //   wallAmt=0;
+      // }
+      LoginUser? userData = await SessionManager.getSession();
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+
+      };
       Map map = {
-        "uid": getData.read("UserLogin")["id"],
+        "uid": userData?.loginid.toString(),
         "eid": eID ?? "",
         "typeid": typeId,
         "type": type,
@@ -49,10 +59,12 @@ class BookEventController extends GetxController implements GetxService {
         "plimit": pLimit,
         "sponsore_id": sponsoreId,
       };
+
       print("::::::::::---------::::::::::" + map.toString());
       Uri uri = Uri.parse(Config.baseurl + Config.bookEventApi);
       var response = await http.post(
         uri,
+        headers: headers,
         body: jsonEncode(map),
       );
       print("........=========........" + response.body);
@@ -60,10 +72,15 @@ class BookEventController extends GetxController implements GetxService {
         var result = jsonDecode(response.body);
         print("........=========........" + result.toString());
         if (result["Result"] == "true") {
+          print("dfhhhhhhhhhhhhhhhhhf" + result.toString());
           showToastMessage(result["ResponseMsg"]);
           OrderPlacedSuccessfully();
         }
       }
+      else
+        {
+          print("hhhhhhhhhhhhhhh" + response.body);
+        }
       update();
     } catch (e) {
       print(e.toString());

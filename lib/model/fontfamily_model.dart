@@ -14,7 +14,7 @@ class FontFamily {
 
 class gradient {
   static const Gradient btnGradient = LinearGradient(
-    colors: [Color(0xff1E20FF), Color(0xff0001A8)],
+    colors: [Color(0xffffc32b), Color(0xffdf9e26)],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );

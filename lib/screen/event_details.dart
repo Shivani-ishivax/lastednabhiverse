@@ -2,6 +2,7 @@
 
 import 'dart:ui' as ui;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +13,8 @@ import 'package:image_stack/image_stack.dart';
 import 'package:magicmate_user/screen/seeAll/gallery_view.dart';
 import 'package:magicmate_user/screen/seeAll/video_view.dart';
 import 'package:magicmate_user/screen/videopreview_screen.dart';
+import 'package:magicmate_user/utils/AppColors.dart';
+import 'package:magicmate_user/utils/ColorHelperClass.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -208,44 +211,60 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                 viewportFraction: 1,
                                 autoPlay: true,
                               ),
-                              items: eventDetailsController
-                                          .eventInfo?.eventData.eventCoverImg !=
-                                      []
-                                  ? eventDetailsController
-                                      .eventInfo?.eventData.eventCoverImg
-                                      .map<Widget>((i) {
-                                      return Builder(
-                                        builder: (BuildContext context) {
-                                          return Container(
-                                            width: Get.size.width,
-                                            decoration: const BoxDecoration(
-                                                color: Colors.transparent),
-                                            child: FadeInImage.assetNetwork(
-                                                placeholder:
-                                                    "assets/ezgif.com-crop.gif",
-                                                fit: BoxFit.cover,
-                                                image: Config.imageUrl + i),
-                                          );
+                              items: (eventDetailsController.eventInfo?.eventData.eventCoverImg ?? []).isNotEmpty
+                                  ? eventDetailsController.eventInfo!.eventData.eventCoverImg
+                                  .map<Widget>((i) {
+                                return Builder(
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                      width: Get.size.width,
+                                      decoration: const BoxDecoration(color: Colors.transparent),
+                                      child: CachedNetworkImage(
+                                        imageUrl: Config.imageUrl + i,
+                                        fit: BoxFit.cover,
+
+                                        httpHeaders: {
+                                          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                          'Accept': 'image/*',
+                                          'Connection': 'keep-alive',
                                         },
-                                      );
-                                    }).toList()
+
+                                        placeholder: (context, url) =>
+                                            Image.asset("assets/ezgif.com-crop.gif", fit: BoxFit.cover),
+
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error, size: 40),
+                                      ),
+                                    );
+                                  },
+                                );
+                              }).toList()
                                   : [].map<Widget>((i) {
-                                      return Builder(
-                                        builder: (BuildContext context) {
-                                          return Container(
-                                            width: 100,
-                                            margin: const EdgeInsets.symmetric(
-                                                horizontal: 1),
-                                            decoration: const BoxDecoration(
-                                                color: Colors.transparent),
-                                            child: Image.network(
-                                              Config.imageUrl + i,
-                                              fit: BoxFit.fill,
-                                            ),
-                                          );
+                                return Builder(
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                      width: 100,
+                                      margin: const EdgeInsets.symmetric(horizontal: 1),
+                                      decoration: const BoxDecoration(color: Colors.transparent),
+                                      child: CachedNetworkImage(
+                                        imageUrl: Config.imageUrl + i,
+                                        fit: BoxFit.fill,
+
+                                        httpHeaders: {
+                                          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                          'Accept': 'image/*',
+                                          'Connection': 'keep-alive',
                                         },
-                                      );
-                                    }).toList(),
+
+                                        placeholder: (context, url) =>
+                                            Center(child: CircularProgressIndicator(strokeWidth: 1)),
+                                        errorWidget: (context, url, error) => Icon(Icons.error),
+                                      ),
+                                    );
+                                  },
+                                );
+                              }).toList(),
+
                               // ),
                             ),
                             decoration: BoxDecoration(
@@ -556,20 +575,25 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                           ),
                                           Row(
                                             children: [
-                                              Container(
-                                                height: 35,
-                                                width: 35,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color:
-                                                      Colors.purple.shade50,
-                                                  image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        "${Config.imageUrl}${eventDetailsController.eventInfo?.eventData.sponsoreImg ?? ""}"),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
+                                          Container(
+                                          height: 35,
+                                              width: 35,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.purple.shade50,
+                                                image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                  image: CachedNetworkImageProvider(
+                                                  "${Config.imageUrl}${eventDetailsController.eventInfo?.eventData.sponsoreImg ?? ""}",
+                                                  headers: {
+                                                  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                                  'Accept': 'image/*',
+                                                  'Connection': 'keep-alive',
+                                                  },
+                                             ),
+                                     ),
+                                  ),
+                                ), SizedBox(
                                                 width: 5,
                                               ),
                                               Column(
@@ -932,10 +956,30 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                                 height: 60,
                                                 width: 60,
                                                 alignment: Alignment.center,
-                                                child: Image.network(
+                                                child: CachedNetworkImage(
+                                                  imageUrl:
                                                   "${Config.imageUrl}${eventDetailsController.eventInfo?.eventFacility[index].facilityImg}",
+
+                                                  httpHeaders: {
+                                                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                                    'Accept': 'image/*',
+                                                    'Connection': 'keep-alive',
+                                                  },
+
                                                   height: 50,
                                                   width: 50,
+                                                  fit: BoxFit.contain,
+
+
+                                                  colorBlendMode: BlendMode.srcIn,
+
+                                                  placeholder: (context, url) => SizedBox(
+                                                    height: 30,
+                                                    width: 30,
+                                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                                  ),
+
+                                                  errorWidget: (context, url, error) => Icon(Icons.error, size: 35),
                                                 ),
                                               ),
                                               SizedBox(
@@ -1009,17 +1053,35 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                         itemBuilder: (context, index) {
                                           return Column(
                                             children: [
-                                              Container(
-                                                height: 60,
-                                                width: 60,
-                                                alignment: Alignment.center,
-                                                child: Image.network(
-                                                  "${Config.imageUrl}${eventDetailsController.eventInfo?.eventRestriction[index].restrictionImg}",
-                                                  height: 50,
-                                                  width: 50,
-                                                ),
+                                            Container(
+                                            height: 60,
+                                            width: 60,
+                                            alignment: Alignment.center,
+                                            child: CachedNetworkImage(
+                                              imageUrl:
+                                              "${Config.imageUrl}${eventDetailsController.eventInfo?.eventRestriction[index].restrictionImg}",
+
+                                              httpHeaders: {
+                                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                                'Accept': 'image/*',
+                                                'Connection': 'keep-alive',
+                                              },
+
+                                              height: 50,
+                                              width: 50,
+                                              fit: BoxFit.contain,
+
+                                              placeholder: (context, url) => SizedBox(
+                                                height: 30,
+                                                width: 30,
+                                                child: CircularProgressIndicator(strokeWidth: 2),
                                               ),
-                                              SizedBox(
+
+                                              errorWidget: (context, url, error) => Icon(Icons.error, size: 35),
+                                            ),
+                                          ),
+
+                                          SizedBox(
                                                 height: 8,
                                               ),
                                               Text(
@@ -1077,7 +1139,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                             style: TextStyle(
                                               fontFamily:
                                                   FontFamily.gilroyMedium,
-                                              color: Color(0xFF6F3DE9),
+                                              color:   ColorHelperClass.getColorFromHex(ColorResources.primary_color2),
                                             ),
                                           ),
                                         ),
@@ -1181,7 +1243,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                             style: TextStyle(
                                               fontFamily:
                                                   FontFamily.gilroyMedium,
-                                              color: Color(0xFF6F3DE9),
+                                              color:   ColorHelperClass.getColorFromHex(ColorResources.primary_color2),
                                             ),
                                           ),
                                         ),

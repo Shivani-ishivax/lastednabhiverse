@@ -16,6 +16,13 @@ class OrgController extends GetxController implements GetxService {
 
   getStatusWiseEvent({String? orgId, status}) async {
     try {
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+
+      };
       isLoading = false;
       Map map = {
         "orag_id": orgId,
@@ -27,6 +34,7 @@ class OrgController extends GetxController implements GetxService {
       print(map);
       var response = await http.post(
         uri,
+        headers: headers,
         body: jsonEncode(map),
       );
       print("-----======-----" + response.body);
@@ -45,6 +53,13 @@ class OrgController extends GetxController implements GetxService {
   getJoinDataList({String? eventId}) async {
     try {
       isLoading = false;
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+
+      };
       Map map = {
         "event_id": eventId,
       };
@@ -52,6 +67,7 @@ class OrgController extends GetxController implements GetxService {
       Uri uri = Uri.parse(Config.baseurl + Config.joinUserList);
       var response = await http.post(
         uri,
+        headers: headers,
         body: jsonEncode(map),
       );
       if (response.statusCode == 200) {

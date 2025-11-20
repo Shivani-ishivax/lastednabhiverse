@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:magicmate_user/model/login/LoginUser.dart';
+import 'package:magicmate_user/screen/utils/SessionData.dart';
 
 import '../Api/config.dart';
 import '../Api/data_store.dart';
@@ -31,13 +33,22 @@ class MyBookingController extends GetxController implements GetxService {
     try {
       isLoading = false;
       status = statusWise ?? "";
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+
+      };
+      LoginUser? userData = await SessionManager.getSession();
       Map map = {
-        "uid": getData.read("UserLogin")["id"],
+        "uid": userData?.loginid.toString(),
         "status": statusWise,
       };
       Uri uri = Uri.parse(Config.baseurl + Config.myOrderHistory);
       var response = await http.post(
         uri,
+        headers: headers,
         body: jsonEncode(map),
       );
       if (response.statusCode == 200) {
@@ -54,19 +65,35 @@ class MyBookingController extends GetxController implements GetxService {
   ticketInformetionApi({String? ticketId}) async {
     try {
       isLoading = false;
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+
+      };
+      LoginUser? userData = await SessionManager.getSession();
       Map map = {
-        "uid": getData.read("UserLogin")["id"],
+        "uid": userData?.loginid.toString(),
         "ticket_id": ticketId,
+
       };
       Uri uri = Uri.parse(Config.baseurl + Config.ticketInformetion);
       var response = await http.post(
         uri,
+        headers: headers,
         body: jsonEncode(map),
       );
+      print("gdfgdff${response.body}");
       if (response.statusCode == 200) {
         var result = jsonDecode(response.body);
         myTicketInfo = MyTicketInfo.fromJson(result);
+        print("fghdsgfhdsh${response.body}");
       }
+      else
+        {
+          print("fghdsgfhdsh${response.statusCode}");
+        }
       isLoading = true;
       update();
     } catch (e) {
@@ -78,15 +105,24 @@ class MyBookingController extends GetxController implements GetxService {
     try {
       isLoading = false;
       update();
+      LoginUser? userData = await SessionManager.getSession();
       Map map = {
-        "uid": getData.read("UserLogin")["id"],
+        "uid": userData?.loginid.toString(),
         "ticket_id": orderId1,
         "cancle_comment": reason,
+      };
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+
       };
       print(map.toString());
       Uri uri = Uri.parse(Config.baseurl + Config.ticketCancle);
       var response = await http.post(
         uri,
+        headers: headers,
         body: jsonEncode(map),
       );
       if (response.statusCode == 200) {
@@ -106,8 +142,16 @@ class MyBookingController extends GetxController implements GetxService {
 
   orderReviewApi({String? orderID}) async {
     try {
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+
+      };
+      LoginUser? userData = await SessionManager.getSession();
       Map map = {
-        "uid": getData.read("UserLogin")["id"],
+        "uid": userData?.loginid.toString(),
         "ticket_id": orderID,
         "total_star": tRate.toString(),
         "review_comment": ratingText.text != "" ? ratingText.text : "",
@@ -117,6 +161,7 @@ class MyBookingController extends GetxController implements GetxService {
       Uri uri = Uri.parse(Config.baseurl + Config.orderReview);
       var response = await http.post(
         uri,
+        headers: headers,
         body: jsonEncode(map),
       );
       print(response.body);

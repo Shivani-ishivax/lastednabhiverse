@@ -1,15 +1,16 @@
 class Config {
 
-  static const String imageUrl = 'https://magicmate.cscodetech.cloud/';
+  static  String imageUrl = '';
+  //static  String imageUrl = 'https://magicmate.cscodetech.cloud/';
  // static const String imageUrl = 'https://demo.lifecode.co.in/';
-  static const paymentBaseUrl = imageUrl;
+  static  String paymentBaseUrl = imageUrl;
 
-  static const String baseurl = '$imageUrl/user_api/';
+  static  String baseurl = '$imageUrl/user_api/';
 
   static const String notificationUrl = 'https://fcm.googleapis.com/fcm/send';
 
   static  String? firebaseKey ;
-
+   static String razorpaykey = "";
   static String? projectID = "d***********";
 
   static const String oneSignel = "********************";

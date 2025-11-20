@@ -1,7 +1,8 @@
 class AppUrls {
   static const String base_url = "https://yblapis.ganpatigroupbharat.com/api/";
-
+  static const String eventapp_url = base_url+"app/event_app_url";
   static const String trailform_url = base_url+"player/playerRegistration";
+
   static const String state_url = base_url+"state/getState";
   static const String venuepartnerregi_url = base_url+"partner/partnerRegistration";
   static const String saveDonation_url=base_url+"donation/saveDonationDetail";

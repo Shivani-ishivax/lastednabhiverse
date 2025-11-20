@@ -5,6 +5,8 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:magicmate_user/model/login/LoginUser.dart';
+import 'package:magicmate_user/screen/utils/SessionData.dart';
 
 import '../Api/config.dart';
 import '../Api/data_store.dart';
@@ -30,23 +32,49 @@ class EventDetailsController extends GetxController implements GetxService {
 
   var mTotal = 0.0;
   int totalTicket = 0;
-
+  Map<int, int> ticketCount = {};
   getTotal({double? total}) {
     mTotal = total ?? 0.0;
     update();
   }
+  void increaseTicket(int index, double price) {
+    ticketCount[index] = (ticketCount[index] ?? 0) + 1;
 
+    totalTicket++;
+    mTotal += price;
+
+    update();
+  }
+
+  void decreaseTicket(int index, double price) {
+    if ((ticketCount[index] ?? 0) > 0) {
+      ticketCount[index] = ticketCount[index]! - 1;
+
+      totalTicket--;
+      mTotal -= price;
+
+      update();
+    }
+  }
   getEventData({String? eventId}) async {
     try {
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+
+      };
+      LoginUser? userData = await SessionManager.getSession();
+      print('User ID: ${userData?.loginid.toString()}');
       Map map = {
-        "uid": getData.read("UserLogin") != null
-            ? getData.read("UserLogin")["id"]
-            : "1",
+        "uid": userData?.loginid.toString(),
         "event_id": eventId,
       };
       Uri uri = Uri.parse(Config.baseurl + Config.eventDetails);
       var response = await http.post(
         uri,
+        headers: headers,
         body: jsonEncode(map),
       );
       print("+++++++map+++++++ $map");
@@ -68,22 +96,38 @@ class EventDetailsController extends GetxController implements GetxService {
 
   getEventTicket({String? eventId}) async {
     try {
+      LoginUser? userData = await SessionManager.getSession();
+      print('User ID: ${userData?.loginid.toString()}');
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+
+      };
       isLoading = false;
       Map map = {
-        "uid": getData.read("UserLogin") != null
-            ? getData.read("UserLogin")["id"]
-            : "1",
+        "uid": userData?.loginid.toString(),
         "event_id": eventId,
       };
       Uri uri = Uri.parse(Config.baseurl + Config.ticketApi);
       var response = await http.post(
         uri,
+        headers: headers,
         body: jsonEncode(map),
       );
+      print("gdfydgf${response.body}");
       if (response.statusCode == 200) {
+        print("sucess");
         var result = jsonDecode(response.body);
         ticketInfo = TicketInfo.fromJson(result);
+
+        print("sucess${ticketInfo?.eventTypePrice.first.ticketPrice.toString()}");
       }
+      else
+        {
+          print("error");
+        }
       isLoading = true;
       update();
     } catch (e) {
@@ -93,15 +137,25 @@ class EventDetailsController extends GetxController implements GetxService {
 
   getCatWiseEvent({String? catId, title, img}) async {
     try {
+      LoginUser? userData = await SessionManager.getSession();
+      print('User ID: ${userData?.loginid.toString()}');
       isLoading = false;
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+
+      };
       Map map = {
-        "uid": getData.read("UserLogin") != null ? getData.read("UserLogin")["id"] : "1",
+        "uid": userData?.loginid.toString(),
         "cat_id": catId,
       };
       print(map.toString());
       Uri uri = Uri.parse(Config.baseurl + Config.catWiseEvent);
       var response = await http.post(
         uri,
+        headers: headers,
         body: jsonEncode(map),
       );
       if (response.statusCode == 200) {
@@ -126,13 +180,23 @@ class EventDetailsController extends GetxController implements GetxService {
 
   getFavAndUnFav({String? eventID}) async {
     try {
+      LoginUser? userData = await SessionManager.getSession();
+      print('User ID: ${userData?.loginid.toString()}');
       Map map = {
-        "uid": getData.read("UserLogin")["id"],
+        "uid":userData?.loginid.toString(),
         "eid": eventID,
+      };
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+
       };
       Uri uri = Uri.parse(Config.baseurl + Config.favORUnFav);
       var response = await http.post(
         uri,
+        headers: headers,
         body: jsonEncode(map),
       );
       print("--------------- ${map}");
@@ -155,8 +219,7 @@ class EventDetailsController extends GetxController implements GetxService {
     update();
   }
 
-  getEventTicketData(
-      {String? ticketId1, ticketType1, ticketPrice1, totalTicket1}) {
+  getEventTicketData(String ticketId1, ticketType1, ticketPrice1, totalTicket1) {
     ticketID = ticketId1 ?? "";
     ticketType = ticketType1 ?? "";
     ticketPrice = ticketPrice1 ?? "";

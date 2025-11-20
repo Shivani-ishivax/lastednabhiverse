@@ -2,12 +2,15 @@
 
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:magicmate_user/model/login/LoginUser.dart';
 import 'package:magicmate_user/screen/paypal/flutter_paypal.dart';
+import 'package:magicmate_user/screen/utils/SessionData.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -60,7 +63,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
   int? _groupValue;
   String? selectidPay = "0";
-  String razorpaykey = "";
+
   String? paymenttital;
 
   var useWallet = 0.0;
@@ -86,7 +89,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       total = subtotal + tex;
       mTotal = total.toString();
       wallet = wallet1.toString();
-      tempWallet = double.parse(wallet1.toString());
+     // tempWallet = double.parse(wallet1.toString());
       if(tempWallet==0.0){
         tempWallet=0;
       }
@@ -125,31 +128,30 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
         Width: Get.size.width,
         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         buttoncolor: gradient.defoultColor,
-        buttontext:
-            getData.read("UserLogin") != null ? "Confirm".tr : "Login".tr,
+        buttontext: "Confirm".tr  ,
         style: TextStyle(
           color: WhiteColor,
           fontFamily: FontFamily.gilroyBold,
           fontSize: 15,
         ),
         onclick: () {
-          if (getData.read("UserLogin") != null) {
+          // if (getData.read("UserLogin") != null) {
             if (subtotal != 0.0) {
               if (status == true) {
                 if (double.parse(total.toString()) > 0) {
-                  paymentSheett();
+                  openCheckout();
                 } else {
                   bookEvent("0");
                 }
               } else {
-                paymentSheett();
+                openCheckout();
               }
             } else {
               bookEvent("0");
             }
-          } else {
-          //  Get.to(LoginScreen());
-          }
+          // } else {
+          // //  Get.to(LoginScreen());
+          // }
         },
       ),
       body: SizedBox(
@@ -166,23 +168,36 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   margin: EdgeInsets.all(10),
                   child: Row(
                     children: [
-                      Container(
+                    Container(
+                    height: 120,
+                    width: 100,
+                    margin: EdgeInsets.all(8),
+                    alignment: Alignment.center,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: CachedNetworkImage(
+                        imageUrl:
+                        "${Config.imageUrl}${eventDetailsController.eventInfo?.eventData.eventImg ?? ""}",
+
+                        httpHeaders: {
+                          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                          'Accept': 'image/*',
+                          'Connection': 'keep-alive',
+                        },
+
                         height: 120,
                         width: 100,
-                        margin: EdgeInsets.all(8),
-                        alignment: Alignment.center,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: FadeInImage.assetNetwork(
-                            placeholder: "assets/ezgif.com-crop.gif",
-                            image:
-                                "${Config.imageUrl}${eventDetailsController.eventInfo?.eventData.eventImg ?? ""}",
-                            height: 120,
-                            width: 100,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                        fit: BoxFit.cover,
+
+                        placeholder: (context, url) =>
+                            Image.asset("assets/ezgif.com-crop.gif", fit: BoxFit.cover),
+
+                        errorWidget: (context, url, error) => Icon(Icons.error, size: 35),
+
+                        fadeInDuration: Duration(milliseconds: 400),
                       ),
+                    ),
+                  ),
                       SizedBox(
                         width: 5,
                       ),
@@ -868,22 +883,22 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                 ?.paymentdata[i].subtitle ??
                                             "",
                                         ontap: () async {
-                                          setState(() {
-                                            razorpaykey = walletController
-                                                .paymentInfo!
-                                                .paymentdata[i]
-                                                .attributes;
-                                            paymenttital = walletController
-                                                .paymentInfo!
-                                                .paymentdata[i]
-                                                .title;
-                                            selectidPay = walletController
-                                                    .paymentInfo
-                                                    ?.paymentdata[i]
-                                                    .id ??
-                                                "";
-                                            _groupValue = i;
-                                          });
+                                          // setState(() {
+                                          //   razorpaykey = walletController
+                                          //       .paymentInfo!
+                                          //       .paymentdata[i]
+                                          //       .attributes;
+                                          //   paymenttital = walletController
+                                          //       .paymentInfo!
+                                          //       .paymentdata[i]
+                                          //       .title;
+                                          //   selectidPay = walletController
+                                          //           .paymentInfo
+                                          //           ?.paymentdata[i]
+                                          //           .id ??
+                                          //       "";
+                                          //   _groupValue = i;
+                                          // });
                                         },
                                         radio: Radio(
                                           activeColor: gradient.defoultColor,
@@ -929,13 +944,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       } else if (paymenttital == "Pay TO Owner") {
                         bookEvent("0");
                       } else if (paymenttital == "Paypal") {
-                        List<String> keyList = razorpaykey.split(",");
-                        print(keyList.toString());
-                        paypalPayment(
-                          total.toString(),
-                          keyList[0],
-                          keyList[1],
-                        );
+                        // List<String> keyList = razorpaykey.split(",");
+                        // print(keyList.toString());
+                        // paypalPayment(
+                        //   total.toString(),
+                        //   keyList[0],
+                        //   keyList[1],
+                        // );
                       } else if (paymenttital == "Stripe") {
                         Get.back();
                         stripePayment();
@@ -1249,13 +1264,18 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
   //!--------- Razorpay ----------//
   void openCheckout() async {
-    var username = getData.read("UserLogin")["name"] ?? "";
-    var mobile = getData.read("UserLogin")["mobile"] ?? "";
-    var email = getData.read("UserLogin")["email"] ?? "";
-    String currentTotal =
-        (double.parse(total.toString()) * 100).toString().split(".").first;
+    LoginUser? userData = await SessionManager.getSession();
+    var username = userData?.name.toString() ?? "";
+    var mobile = userData?.mobileNo.toString() ?? "";
+    var email = userData?.email.toString() ?? "";
+
+
+    print('User ID: ${Config.razorpaykey}');
+    print('User email: ${email}');
+
+    String currentTotal = (double.parse(total.toString()) * 100).toString().split(".").first;
     var options = {
-      'key': razorpaykey,
+      'key': Config.razorpaykey,
       'amount': currentTotal,
       'name': username,
       'description': "",
@@ -1271,6 +1291,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    print(
+        'Sucees Response: ${"Sucess: " + response.paymentId.toString()}');
+
     bookEvent(response.paymentId);
   }
 

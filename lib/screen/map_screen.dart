@@ -1,11 +1,14 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, avoid_unnecessary_containers, sized_box_for_whitespace, unused_field, prefer_final_fields, prefer_interpolation_to_compose_strings, avoid_print, prefer_collection_literals
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:magicmate_user/screen/searchevent_screen.dart';
+import 'package:magicmate_user/utils/AppColors.dart';
+import 'package:magicmate_user/utils/ColorHelperClass.dart';
 
 import '../Api/config.dart';
 import '../controller/eventdetails_controller.dart';
@@ -57,6 +60,7 @@ class _MapScreenState extends State<MapScreen> {
                   zoomGesturesEnabled: true,
                   tiltGesturesEnabled: true,
                   zoomControlsEnabled: true,
+
                   onMapCreated: (controller) {
                     setState(() {
                       mapController = controller;
@@ -202,15 +206,26 @@ class _MapScreenState extends State<MapScreen> {
                                   alignment: Alignment.center,
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(15),
-                                    child: FadeInImage.assetNetwork(
-                                      placeholder: "assets/ezgif.com-crop.gif",
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                      "${Config.imageUrl}${homePageController.homeInfo?.homeData.nearbyEvent[index].eventImg ?? ""}",
+
+                                      httpHeaders: {
+                                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                        'Accept': 'image/*',
+                                        'Connection': 'keep-alive',
+                                      },
+
                                       height: 120,
                                       width: 100,
-                                      placeholderCacheHeight: 120,
-                                      placeholderCacheWidth: 100,
-                                      image:
-                                          "${Config.imageUrl}${homePageController.homeInfo?.homeData.nearbyEvent[index].eventImg}",
                                       fit: BoxFit.cover,
+
+                                      placeholder: (context, url) =>
+                                          Image.asset("assets/ezgif.com-crop.gif", fit: BoxFit.cover),
+
+                                      errorWidget: (context, url, error) => Icon(Icons.error, size: 35),
+
+                                      fadeInDuration: Duration(milliseconds: 400),
                                     ),
                                   ),
                                 ),
@@ -277,7 +292,7 @@ class _MapScreenState extends State<MapScreen> {
                                         children: [
                                           Image.asset(
                                             "assets/Location.png",
-                                            color: BlackColor,
+                                            color: ColorHelperClass.getColorFromHex(ColorResources.primary_color2),
                                             height: 15,
                                             width: 15,
                                           ),
