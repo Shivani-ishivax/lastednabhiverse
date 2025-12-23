@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 //import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -19,36 +20,35 @@ class SplashView extends StatefulWidget {
   State<SplashView> createState() => _SplashViewState();
 }
 
-class _SplashViewState extends State<SplashView> with SingleTickerProviderStateMixin {
-
+class _SplashViewState extends State<SplashView>
+    with SingleTickerProviderStateMixin {
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     checkUser();
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return  Scaffold(
-       backgroundColor: Colors.black,
+    return Scaffold(
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
           AppbackgroundWidget(),
           Container(
             child: Center(
-              child: Image.asset(
-                AppImagesssss.logoImage,
-                width: size.width ,
-              ),
+              child: Image.asset(AppImagesssss.logoImage, width: size.width),
             ),
           ),
         ],
       ),
     );
   }
+
   void checkUser() async {
-    var userId="";
+    var userId = 0;
     LoginUser? userData = await SessionManager.getSession();
     print('User ID: ${userData?.loginid.toString()}');
     print('User Name: ${userData?.email.toString()}');
@@ -65,9 +65,12 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
     //     }
     //   });
     // });
-    Timer(Duration(seconds: 3), () async{
+    Timer(Duration(seconds: 3), () async {
       final prefs = await SharedPreferences.getInstance();
       final seenIntro = prefs.getBool('seenIntro') ?? false;
+      print(
+        'login debuggggggggggggggggg ${jsonEncode(userData)} ${userData?.loginid.toString()} ${jsonEncode(seenIntro)}',
+      );
       if (!seenIntro) {
         // Show intro screen once
 
@@ -75,8 +78,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
           context,
           MaterialPageRoute(builder: (_) => IntroductionScreen()),
         );
-      }
-      else if (userData?.loginid.toString()==null && userId =="") {
+      } else if (userData?.loginid == null || userData?.loginid == 0) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => BottomBarScreen()),
@@ -87,14 +89,38 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
         //   MaterialPageRoute(builder: (_) => LoginView()),
         // );
       } else {
-
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => BottomBarScreen()),
         );
       }
-
     });
-
+    //----old-code---------------this-was-used-before----------------------
+    // Timer(Duration(seconds: 3), () async{
+    //   final prefs = await SharedPreferences.getInstance();
+    //   final seenIntro = prefs.getBool('seenIntro') ?? false;
+    //   if (!seenIntro) {
+    //     // Show intro screen once
+    //
+    //     Navigator.pushReplacement(
+    //       context,
+    //       MaterialPageRoute(builder: (_) => IntroductionScreen()),
+    //     );
+    //   }
+    //   else if (userData?.loginid.toString()==null && userId =="") {
+    //
+    //     Navigator.pushReplacement(
+    //       context,
+    //       MaterialPageRoute(builder: (_) => LoginView()),
+    //     );
+    //   } else {
+    //
+    //     Navigator.pushReplacement(
+    //       context,
+    //       MaterialPageRoute(builder: (_) => BottomBarScreen()),
+    //     );
+    //   }
+    //
+    // });
   }
 }
