@@ -77,11 +77,15 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
         );
       }
       else if (userData?.loginid.toString()==null && userId =="") {
-
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => LoginView()),
+          MaterialPageRoute(builder: (_) => BottomBarScreen()),
         );
+
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (_) => LoginView()),
+        // );
       } else {
 
         Navigator.pushReplacement(

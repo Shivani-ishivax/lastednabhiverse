@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -40,6 +42,7 @@ class RegisterController extends GetxController {
       if(_value['success']==true)
       {
         LoginUser user = LoginUser.fromJson(_value['user']);
+        print("lllllllllllllllllllllllllll"+jsonEncode(_value));
         print("User Name: ${user.name}");
         print("Login ID: ${user.loginid}");
         await SessionManager.saveSessionUserData(user);

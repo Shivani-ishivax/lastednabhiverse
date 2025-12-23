@@ -48,8 +48,29 @@ class SessionManager {
       return LoginUser.fromJson(sessionMap);
     }
     else{
-      print("fggfghfgh");
+      // Dummy user when no session exists
+      print("dummy data");
+      return LoginUser(
+        loginid: 0,
+        name: "Guest",
+        email: "",
+        role: 0,
+        gender: "",
+        dob: "",
+        imagePath: "",
+        mobileNo: "",
+        profileType: 0,
+        referralCode: "",
+        trialAddress: "",
+        referralCount: 0,
+        reward: 0,
+      );
+
     }
     return null;
   }
+
+
+
+
 }
