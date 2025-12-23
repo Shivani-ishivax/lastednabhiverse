@@ -59,49 +59,51 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: GetBuilder<MyBookingController>(
+      bottomNavigationBar:
+      SafeArea(child:       GetBuilder<MyBookingController>(
         builder: (context) {
           return myBookingController.status != "Past"
               ? GestButton(
-                  height: 50,
-                  Width: Get.size.width,
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  buttoncolor: gradient.defoultColor,
-                  buttontext: "Download Ticket".tr,
-                  style: TextStyle(
-                    color: WhiteColor,
-                    fontFamily: FontFamily.gilroyBold,
-                    fontSize: 15,
-                  ),
-                  onclick: () async {
-                    _capturePng();
-                  },
-                )
+            height: 50,
+            Width: Get.size.width,
+            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            buttoncolor: gradient.defoultColor,
+            buttontext: "Download Ticket".tr,
+            style: TextStyle(
+              color: WhiteColor,
+              fontFamily: FontFamily.gilroyBold,
+              fontSize: 15,
+            ),
+            onclick: () async {
+              _capturePng();
+            },
+          )
               : myBookingController.status == "Past"
-                  ? myBookingController.myTicketInfo?.ticketData?.ticketRate !=
-                              "1" &&
-                          myBookingController.myTicketInfo?.ticketData!.ticketStatus !=
-                              "Cancelled"
-                      ? GestButton(
-                          height: 50,
-                          Width: Get.size.width,
-                          margin: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          buttoncolor: gradient.defoultColor,
-                          buttontext: "Review".tr,
-                          style: TextStyle(
-                            color: WhiteColor,
-                            fontFamily: FontFamily.gilroyBold,
-                            fontSize: 15,
-                          ),
-                          onclick: () async {
-                            reviewSheet();
-                          },
-                        )
-                      : SizedBox()
-                  : SizedBox();
+              ? myBookingController.myTicketInfo?.ticketData?.ticketRate !=
+              "1" &&
+              myBookingController.myTicketInfo?.ticketData!.ticketStatus !=
+                  "Cancelled"
+              ? GestButton(
+            height: 50,
+            Width: Get.size.width,
+            margin: EdgeInsets.symmetric(
+                horizontal: 10, vertical: 10),
+            buttoncolor: gradient.defoultColor,
+            buttontext: "Review".tr,
+            style: TextStyle(
+              color: WhiteColor,
+              fontFamily: FontFamily.gilroyBold,
+              fontSize: 15,
+            ),
+            onclick: () async {
+              reviewSheet();
+            },
+          )
+              : SizedBox()
+              : SizedBox();
         },
-      ),
+      ))
+,
       body: SizedBox(
         height: Get.size.height,
         width: Get.size.width,
@@ -130,7 +132,7 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
                                 ),
                                 Center(
                                   child: CachedNetworkImage(
-                                    imageUrl: "${Config.imageUrl}${myBookingController.myTicketInfo?.ticketData?.qrcode}",
+                                    imageUrl: "${myBookingController.myTicketInfo?.ticketData?.qrcode}",
                                     httpHeaders: {
                                       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
                                       'Accept': 'image/*',
