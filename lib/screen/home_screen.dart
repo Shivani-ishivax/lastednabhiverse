@@ -23,7 +23,7 @@ import '../helpar/routes_helpar.dart';
 import '../model/fontfamily_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../utils/Colors.dart';
-
+import '../utils/auth_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,7 +32,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-var currency="Rs";
+var currency = "Rs";
 var wallet1;
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -44,8 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
   String? base64Image;
 
   List<String> bannerImages = [];
-
-
 
   ScrollController? _scrollController;
   bool lastStatus = true;
@@ -65,9 +63,9 @@ class _HomeScreenState extends State<HomeScreen> {
         _scrollController!.offset > (height - kToolbarHeight);
   }
 
-
   Future<void> fetchBanners() async {
-    const String apiUrl = "https://yblapis.ganpatigroupbharat.com/api/yclBanner/getYclBannerDetail";
+    const String apiUrl =
+        "https://yblapis.ganpatigroupbharat.com/api/yclBanner/getYclBannerDetail";
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -85,9 +83,18 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       print("API Error: $e");
-
     }
   }
+
+  //---------------kripal-----naviagte-to-login-screen-if-not-logged-in----------------
+  void _authNavigate(VoidCallback onAuthenticated) {
+    AuthHelper.checkAuthAndExecute(
+      onAuthenticated: onAuthenticated,
+      context: context,
+    );
+  }
+
+  //---------------kripal-----naviagte-to-login-screen-if-not-logged-in----------------
 
   @override
   void initState() {
@@ -105,24 +112,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 : const SizedBox();
           })
         : null;
-
   }
 
- void networkimageconvert() {
+  void networkimageconvert() {
     (() async {
       final headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Connection': 'keep-alive',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-
       };
-      http.Response response =
-          await http.get(Uri.parse(Config.imageUrl + networkimage.toString(),
-
-
-          ),headers: headers
-          );
+      http.Response response = await http.get(
+        Uri.parse(Config.imageUrl + networkimage.toString()),
+        headers: headers,
+      );
       if (mounted) {
         print(response.bodyBytes);
         setState(() {
@@ -136,386 +139,407 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bgcolor,
-      body: GetBuilder<HomePageController>(builder: (homePageController) {
-        return NestedScrollView(
-                controller: _scrollController,
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
-                    SliverAppBar(
-                      elevation: 0,
-                      pinned: true,
-                      expandedHeight: Get.size.height * 0.50,
-                      titleSpacing: 0,
-                      backgroundColor:
-                          _isShrink ? ColorHelperClass.getColorFromHex(ColorResources.primary_color) : transparent,
-                      leading: Padding(
-                        padding: EdgeInsets.all(12),
+      body: GetBuilder<HomePageController>(
+        builder: (homePageController) {
+          return NestedScrollView(
+            controller: _scrollController,
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  elevation: 0,
+                  pinned: true,
+                  expandedHeight: Get.size.height * 0.50,
+                  titleSpacing: 0,
+                  backgroundColor: _isShrink
+                      ? ColorHelperClass.getColorFromHex(
+                          ColorResources.primary_color,
+                        )
+                      : transparent,
+                  leading: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Image.asset(
+                      "assets/ic_launcher.png",
+                      height: 20,
+                      width: 30,
+                    ),
+                  ),
+                  title: Text(
+                    "Nabhiverse".tr,
+                    style: TextStyle(
+                      fontFamily: FontFamily.gilroyBold,
+                      fontSize: 20,
+                      color: WhiteColor,
+                    ),
+                  ),
+                  actions: [
+                    InkWell(
+                      onTap: () =>
+                          _authNavigate(() => Get.to(NotificationScreen())),
+
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        alignment: Alignment.center,
                         child: Image.asset(
-                          "assets/ic_launcher.png",
+                          "assets/Notification.png",
                           height: 20,
-                          width: 30,
+                          width: 20,
+                          color: gradient.defoultColor,
                         ),
-                      ),
-                      title: Text(
-                        "Nabhiverse".tr,
-                        style: TextStyle(
-                          fontFamily: FontFamily.gilroyBold,
-                          fontSize: 20,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
                           color: WhiteColor,
                         ),
                       ),
-                      actions: [
-                        InkWell(
-                          onTap: () {
-                            Get.to(NotificationScreen());
-
-                          },
-                          child: Container(
-                            height: 40,
-                            width: 40,
-                            alignment: Alignment.center,
-                            child: Image.asset(
-                              "assets/Notification.png",
-                              height: 20,
-                              width: 20,
-                              color: gradient.defoultColor,
+                    ),
+                    SizedBox(width: 5),
+                  ],
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Container(
+                      // height: Get.size.height * 0.38,
+                      width: Get.size.width,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 45),
+                            SizedBox(height: Get.size.height * 0.020),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 40),
+                              child: Text(
+                                "Discover amazing event\nnear by you.".tr,
+                                style: TextStyle(
+                                  fontFamily: FontFamily.gilroyBold,
+                                  fontSize: 22,
+                                  color: WhiteColor,
+                                ),
+                              ),
                             ),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: WhiteColor,
+                            SizedBox(height: Get.size.height * 0.040),
+                            InkWell(
+                              onTap: () => _authNavigate(
+                                () => Get.to(SearchEventScreen()),
+                              ),
+
+                              child: Container(
+                                height: 45,
+                                width: Get.size.width,
+                                margin: EdgeInsets.only(right: 10),
+                                child: Row(
+                                  children: [
+                                    SizedBox(width: 15),
+                                    Image.asset(
+                                      "assets/Search.png",
+                                      height: 25,
+                                      width: 25,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      "Search...".tr,
+                                      style: TextStyle(
+                                        fontFamily: FontFamily.gilroyMedium,
+                                        color: Colors.grey.shade500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                decoration: BoxDecoration(
+                                  color: WhiteColor,
+                                  borderRadius: BorderRadius.circular(40),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                      ],
-                      flexibleSpace: FlexibleSpaceBar(
-                        background: Container(
-                          // height: Get.size.height * 0.38,
-                          width: Get.size.width,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  height: 45,
-                                ),
-                                SizedBox(
-                                  height: Get.size.height * 0.020,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 40),
-                                  child: Text(
-                                    "Discover amazing event\nnear by you.".tr,
-                                    style: TextStyle(
-                                      fontFamily: FontFamily.gilroyBold,
-                                      fontSize: 22,
-                                      color: WhiteColor,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: Get.size.height * 0.040,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    Get.to(SearchEventScreen());
-                                  },
-                                  child: Container(
-                                    height: 45,
-                                    width: Get.size.width,
-                                    margin: EdgeInsets.only(right: 10),
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 15,
-                                        ),
-                                        Image.asset(
-                                          "assets/Search.png",
-                                          height: 25,
-                                          width: 25,
-                                        ),
-                                        SizedBox(
-                                          width: 8,
-                                        ),
-                                        Text(
-                                          "Search...".tr,
-                                          style: TextStyle(
-                                            fontFamily:
-                                                FontFamily.gilroyMedium,
-                                            color: Colors.grey.shade500,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: WhiteColor,
-                                      borderRadius: BorderRadius.circular(40),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: Get.size.height * 0.025,
-                                ),
+                            SizedBox(height: Get.size.height * 0.025),
 
+                            Container(
+                              height: 35,
+                              width: Get.size.width,
+                              alignment: Alignment.center,
+                              child:
+                                  (homePageController
+                                              .homeInfo
+                                              ?.homeData
+                                              .catlist ??
+                                          [])
+                                      .isNotEmpty
+                                  ? ListView.separated(
+                                      separatorBuilder: (context, index) =>
+                                          SizedBox(width: 10),
+                                      itemCount: homePageController
+                                          .homeInfo!
+                                          .homeData
+                                          .catlist
+                                          .length,
+                                      scrollDirection: Axis.horizontal,
+                                      physics: BouncingScrollPhysics(),
+                                      padding: EdgeInsets.zero,
+                                      shrinkWrap: true,
+                                      itemBuilder: (context, index) {
+                                        return InkWell(
+                                          onTap: () => _authNavigate(() {
+                                            eventDetailsController
+                                                .getCatWiseEvent(
+                                                  catId: homePageController
+                                                      .homeInfo
+                                                      ?.homeData
+                                                      .catlist[index]
+                                                      .id,
+                                                  title:
+                                                      homePageController
+                                                          .homeInfo
+                                                          ?.homeData
+                                                          .catlist[index]
+                                                          .title ??
+                                                      "",
+                                                  img:
+                                                      homePageController
+                                                          .homeInfo
+                                                          ?.homeData
+                                                          .catlist[index]
+                                                          .coverImg ??
+                                                      "",
+                                                );
+                                          }),
 
-
-                                Container(
-                                  height: 35,
-                                  width: Get.size.width,
-                                  alignment: Alignment.center,
-                                  child: ( homePageController.homeInfo?.homeData.catlist ?? []).isNotEmpty
-                                      ? ListView.separated(
-                                    separatorBuilder: (context, index) =>
-                                        SizedBox(
-                                      width: 10,
-                                    ),
-                                    itemCount: homePageController.homeInfo!.homeData.catlist.length,
-                                    scrollDirection: Axis.horizontal,
-                                    physics: BouncingScrollPhysics(),
-                                    padding: EdgeInsets.zero,
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) {
-                                      return InkWell(
-                                        onTap: () {
-                                          eventDetailsController.getCatWiseEvent(
-                                            catId: homePageController.homeInfo?.homeData.catlist[index].id,
-                                            title: homePageController.homeInfo?.homeData.catlist[index].title ?? "",
-                                            img: homePageController.homeInfo?.homeData.catlist[index].coverImg ?? "",
-                                          );
-                                        },
-                                        child: Container(
-                                          height: 30,
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 15),
-                                          // margin: EdgeInsets.symmetric(horizontal: 8),
-                                          alignment: Alignment.center,
-                                          child: Row(
-                                            children: [
-                                              CachedNetworkImage(
-                                                imageUrl:"${Config.imageUrl}${homePageController.homeInfo?.homeData.catlist[index].catImg}",
-                                                httpHeaders: {
-                                                  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-                                                  'Accept': 'image/*',
-                                                  'Connection': 'keep-alive',
-                                                },
-                                                height: 20,
-                                                width: 20,
-                                                placeholder: (context, url) => SizedBox(
+                                          child: Container(
+                                            height: 30,
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 15,
+                                            ),
+                                            // margin: EdgeInsets.symmetric(horizontal: 8),
+                                            alignment: Alignment.center,
+                                            child: Row(
+                                              children: [
+                                                CachedNetworkImage(
+                                                  imageUrl:
+                                                      "${Config.imageUrl}${homePageController.homeInfo?.homeData.catlist[index].catImg}",
+                                                  httpHeaders: {
+                                                    'User-Agent':
+                                                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                                    'Accept': 'image/*',
+                                                    'Connection': 'keep-alive',
+                                                  },
                                                   height: 20,
                                                   width: 20,
-                                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                                  placeholder: (context, url) =>
+                                                      SizedBox(
+                                                        height: 20,
+                                                        width: 20,
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                              strokeWidth: 2,
+                                                            ),
+                                                      ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                width: 4,
-                                              ),
-                                              Text(
-                                                homePageController
-                                                        .homeInfo
-                                                        ?.homeData
-                                                        .catlist[index]
-                                                        .title ??
-                                                    "",
-                                                style: TextStyle(
+                                                SizedBox(width: 4),
+                                                Text(
+                                                  homePageController
+                                                          .homeInfo
+                                                          ?.homeData
+                                                          .catlist[index]
+                                                          .title ??
+                                                      "",
+                                                  style: TextStyle(
                                                     color: BlackColor,
-                                                    fontFamily: FontFamily
-                                                        .gilroyMedium,
-                                                    fontSize: 15),
-                                              ),
-                                            ],
+                                                    fontFamily:
+                                                        FontFamily.gilroyMedium,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: WhiteColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                            ),
                                           ),
-                                          decoration: BoxDecoration(
-                                            color: WhiteColor,
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  )
+                                        );
+                                      },
+                                    )
                                   : Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "No Nearby Event placed!",
-                                          style: TextStyle(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "No Nearby Event placed!",
+                                            style: TextStyle(
                                               fontFamily: FontFamily.gilroyBold,
                                               color: WhiteColor,
-                                              fontSize: 15),
-                                        ),
-                                      ],
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: Get.size.height * 0.025,
-                                ),
-                                Container(
-                                  width: Get.size.width,
-                                  height: 150,
+                            ),
+                            SizedBox(height: Get.size.height * 0.025),
+                            Container(
+                              width: Get.size.width,
+                              height: 150,
 
-                                    child:   bannerImages.isEmpty
-                                      ? Center(child: Text("No banners found"))
-                                      : CarouselSlider(
-                                    options: CarouselOptions(
-                                      height: 150,
-                                      autoPlay: true,
-                                      viewportFraction: 1,
-                                      enlargeCenterPage: false,
-                                    ),
-                                    items: bannerImages.map((url) {
-                                      return ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: CachedNetworkImage(
+                              child: bannerImages.isEmpty
+                                  ? Center(child: Text("No banners found"))
+                                  : CarouselSlider(
+                                      options: CarouselOptions(
+                                        height: 150,
+                                        autoPlay: true,
+                                        viewportFraction: 1,
+                                        enlargeCenterPage: false,
+                                      ),
+                                      items: bannerImages.map((url) {
+                                        return ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          child: CachedNetworkImage(
                                             imageUrl: url,
-                                          httpHeaders: {
-                                              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                            httpHeaders: {
+                                              'User-Agent':
+                                                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
                                               'Accept': 'image/*',
                                               'Connection': 'keep-alive',
                                             },
 
                                             width: double.infinity,
                                             fit: BoxFit.fitWidth,
-                                            placeholder: (context, url) => Image.asset(
-                                              "assets/ezgif.com-crop.gif",
-                                              height: 120,
-                                              width: 100,
-                                              fit: BoxFit.cover,
-                                            ),
+                                            placeholder: (context, url) =>
+                                                Image.asset(
+                                                  "assets/ezgif.com-crop.gif",
+                                                  height: 120,
+                                                  width: 100,
+                                                  fit: BoxFit.cover,
+                                                ),
 
-                                            errorWidget: (context, url, error) => Icon(Icons.error, size: 40),
-                                          )
-
-
-                                      );
-                                    }).toList(),
-                                  ),
-                                )
-
-
-
-                              ],
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error, size: 40),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
                             ),
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(10),
-                              bottomRight: Radius.circular(10),
-                            ),
-                            image: DecorationImage(
-                              image: AssetImage("assets/background.png"),
-                              fit: BoxFit.fill,
-                            ),
-                          ),
+                          ],
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                        image: DecorationImage(
+                          image: AssetImage("assets/background.png"),
+                          fit: BoxFit.fill,
                         ),
                       ),
                     ),
-                  ];
-                },
-                body: RefreshIndicator(
-                  color: ColorHelperClass.getColorFromHex(ColorResources.primary_color),
-                  onRefresh: () {
-                    return Future.delayed(
-                      Duration(seconds: 2),
-                      () {
-                        homePageController.getHomeDataApi();
-                      },
-                    );
-                  },
-                  child: ListView(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    physics: NeverScrollableScrollPhysics(),
+                  ),
+                ),
+              ];
+            },
+            body: RefreshIndicator(
+              color: ColorHelperClass.getColorFromHex(
+                ColorResources.primary_color,
+              ),
+              onRefresh: () {
+                return Future.delayed(Duration(seconds: 2), () {
+                  homePageController.getHomeDataApi();
+                });
+              },
+              child: ListView(
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                physics: NeverScrollableScrollPhysics(),
+                children: [
+                  Row(
                     children: [
-                      Row(
-                              children: [
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Text(
-                                  "Latest Event".tr,
-                                  style: TextStyle(
-                                    fontFamily: FontFamily.gilroyBold,
-                                    color: BlackColor,
-                                    fontSize: 17,
-                                  ),
-                                ),
-                                Spacer(),
-                                TextButton(
-                                  onPressed: () {
-                                    Get.to(LatestEvent(eventStaus: "1"));
-                                  },
-                                  child: Text(
-                                    "See All".tr,
-                                    style: TextStyle(
-                                      fontFamily: FontFamily.gilroyMedium,
-                                      color: gradient.defoultColor,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                              ],
-                            ),
-                      (homePageController.homeInfo?.homeData?.latestEvent ?? []).isNotEmpty
-                          ? SizedBox(
-                              height: 320,
-                              width: Get.size.width,
-                              child: ListView.builder(
-                                itemCount: homePageController
-                                    .homeInfo?.homeData.latestEvent.length
-                                    .clamp(0, 5),
-                                scrollDirection: Axis.horizontal,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  return InkWell(
-                                    onTap: () async {
-                                      await eventDetailsController
-                                          .getEventData(
-                                        eventId: homePageController
-                                            .homeInfo
-                                            ?.homeData
-                                            .latestEvent[index]
-                                            .eventId,
-                                      );
-                                      Get.toNamed(
-                                        Routes.eventDetailsScreen,
-                                        arguments: {
-                                          "eventId": homePageController
-                                              .homeInfo
-                                              ?.homeData
-                                              .latestEvent[index]
-                                              .eventId,
-                                          "bookStatus": "1"
-                                        },
-                                      );
+                      SizedBox(width: 15),
+                      Text(
+                        "Latest Event".tr,
+                        style: TextStyle(
+                          fontFamily: FontFamily.gilroyBold,
+                          color: BlackColor,
+                          fontSize: 17,
+                        ),
+                      ),
+                      Spacer(),
+                      TextButton(
+                        onPressed: () {
+                          Get.to(LatestEvent(eventStaus: "1"));
+                        },
+                        child: Text(
+                          "See All".tr,
+                          style: TextStyle(
+                            fontFamily: FontFamily.gilroyMedium,
+                            color: gradient.defoultColor,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                    ],
+                  ),
+                  (homePageController.homeInfo?.homeData?.latestEvent ?? [])
+                          .isNotEmpty
+                      ? SizedBox(
+                          height: 320,
+                          width: Get.size.width,
+                          child: ListView.builder(
+                            itemCount: homePageController
+                                .homeInfo
+                                ?.homeData
+                                .latestEvent
+                                .length
+                                .clamp(0, 5),
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () => _authNavigate(() async {
+                                  await eventDetailsController.getEventData(
+                                    eventId: homePageController
+                                        .homeInfo
+                                        ?.homeData
+                                        .latestEvent[index]
+                                        .eventId,
+                                  );
+                                  Get.toNamed(
+                                    Routes.eventDetailsScreen,
+                                    arguments: {
+                                      "eventId": homePageController
+                                          .homeInfo
+                                          ?.homeData
+                                          .latestEvent[index]
+                                          .eventId,
+                                      "bookStatus": "1",
                                     },
-                                    child: Container(
-                                      height: 320,
-                                      width: 240,
-                                      margin: EdgeInsets.only(
-                                          left: 10, right: 10, bottom: 10),
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(30),
-                                        child: Stack(
-                                          children: [
-                                          SizedBox(
+                                  );
+                                }),
+
+                                child: Container(
+                                  height: 320,
+                                  width: 240,
+                                  margin: EdgeInsets.only(
+                                    left: 10,
+                                    right: 10,
+                                    bottom: 10,
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(30),
+                                    child: Stack(
+                                      children: [
+                                        SizedBox(
                                           height: 320,
                                           width: 240,
                                           child: CachedNetworkImage(
                                             imageUrl:
-                                            "${Config.imageUrl}${homePageController.homeInfo?.homeData.latestEvent[index].eventImg}",
+                                                "${Config.imageUrl}${homePageController.homeInfo?.homeData.latestEvent[index].eventImg}",
 
                                             httpHeaders: {
-                                              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                              'User-Agent':
+                                                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
                                               'Accept': 'image/*',
                                               'Connection': 'keep-alive',
                                             },
@@ -524,936 +548,946 @@ class _HomeScreenState extends State<HomeScreen> {
                                             width: 240,
                                             height: 320,
 
-                                            placeholder: (context, url) => Image.asset(
-                                              "assets/ezgif.com-crop.gif",
-                                              fit: BoxFit.fill,
-                                              width: 240,
-                                              height: 320,
+                                            placeholder: (context, url) =>
+                                                Image.asset(
+                                                  "assets/ezgif.com-crop.gif",
+                                                  fit: BoxFit.fill,
+                                                  width: 240,
+                                                  height: 320,
+                                                ),
+
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error, size: 40),
+
+                                            fadeInDuration: Duration(
+                                              milliseconds: 400,
                                             ),
-
-                                            errorWidget: (context, url, error) => Icon(Icons.error, size: 40),
-
-                                            fadeInDuration: Duration(milliseconds: 400),
-                                            fadeOutDuration: Duration(milliseconds: 200),
+                                            fadeOutDuration: Duration(
+                                              milliseconds: 200,
+                                            ),
                                           ),
                                         ),
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                gradient: LinearGradient(
-                                                  begin: Alignment.topCenter,
-                                                  end: Alignment.bottomCenter,
-                                                  stops: [0.6, 0.8, 1.5],
-                                                  colors: [
-                                                    Colors.transparent,
-                                                    Colors.black
-                                                        .withOpacity(0.5),
-                                                    Colors.black
-                                                        .withOpacity(0.5),
-                                                  ],
-                                                ),
-                                                //border: Border.all(color: lightgrey),
-                                              ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              stops: [0.6, 0.8, 1.5],
+                                              colors: [
+                                                Colors.transparent,
+                                                Colors.black.withOpacity(0.5),
+                                                Colors.black.withOpacity(0.5),
+                                              ],
                                             ),
+                                            //border: Border.all(color: lightgrey),
+                                          ),
+                                        ),
 
-                                            Positioned(
+                                        Positioned(
+                                          bottom: 5,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              left: 10,
                                               bottom: 5,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.only(
-                                                        left: 10,
-                                                        bottom: 5,
-                                                        right: 10),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .start,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 240,
-                                                      child: Text(
-                                                        homePageController
-                                                                .homeInfo
-                                                                ?.homeData
-                                                                .latestEvent[
-                                                                    index]
-                                                                .eventTitle ??
-                                                            "",
-                                                        maxLines: 1,
-                                                        style: TextStyle(
-                                                          fontFamily:
-                                                              FontFamily
-                                                                  .gilroyBold,
-                                                          fontSize: 17,
-                                                          color: WhiteColor,
-                                                          overflow:
-                                                              TextOverflow
-                                                                  .ellipsis,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 8,
-                                                    ),
-                                                    Text(
-                                                      homePageController
-                                                              .homeInfo
-                                                              ?.homeData
-                                                              .latestEvent[
-                                                                  index]
-                                                              .eventSdate ??
-                                                          "",
-                                                      maxLines: 1,
-                                                      style: TextStyle(
-                                                        fontFamily: FontFamily
-                                                            .gilroyMedium,
-                                                        color: WhiteColor,
-                                                        fontSize: 15,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Image.asset(
-                                                          "assets/Location.png",
-                                                          color: WhiteColor,
-                                                          height: 15,
-                                                          width: 15,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 4,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 210,
-                                                          child: Text(
-                                                            homePageController
-                                                                    .homeInfo
-                                                                    ?.homeData
-                                                                    .latestEvent[
-                                                                        index]
-                                                                    .eventPlaceName ??
-                                                                "",
-                                                            maxLines: 1,
-                                                            style: TextStyle(
-                                                              fontFamily:
-                                                                  FontFamily
-                                                                      .gilroyMedium,
-                                                              fontSize: 15,
-                                                              color:
-                                                                  WhiteColor,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(30),
-                                        color: WhiteColor,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            )
-                          : Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Container(
-                              height: 150,
-                              width: 200,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage("assets/emptyOrder.png")),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              "No Latest Event placed!",
-                              style: TextStyle(
-                                  fontFamily: FontFamily.gilroyBold,
-                                  color: BlackColor,
-                                  fontSize: 15),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              "Currently you don’t have any Latest Event.",
-                              style: TextStyle(
-                                  fontFamily: FontFamily.gilroyMedium,
-                                  color: greyColor),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                              children: [
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Text(
-                                  "Nearby Event".tr,
-                                  style: TextStyle(
-                                    fontFamily: FontFamily.gilroyBold,
-                                    color: BlackColor,
-                                    fontSize: 17,
-                                  ),
-                                ),
-                                Spacer(),
-                                TextButton(
-                                  onPressed: () {
-                                    Get.to(LatestEvent(eventStaus: "3"));
-                                  },
-                                  child: Text(
-                                    "See All".tr,
-                                    style: TextStyle(
-                                      fontFamily: FontFamily.gilroyMedium,
-                                      color: gradient.defoultColor,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                              ],
-                            ),
-                      ( homePageController.homeInfo?.homeData.nearbyEvent ?? []).isNotEmpty
-                          ? Container(
-                              height: Get.height * 0.34,
-                              width: Get.size.width,
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: homePageController
-                                    .homeInfo?.homeData.nearbyEvent.length
-                                    .clamp(0, 5),
-                                scrollDirection: Axis.horizontal,
-                                padding: EdgeInsets.zero,
-                                physics: BouncingScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  return InkWell(
-                                    onTap: () async {
-                                      await eventDetailsController.getEventData(
-                                        eventId: homePageController.homeInfo?.homeData.nearbyEvent[index].eventId,
-                                      );
-                                      Get.toNamed(
-                                        Routes.eventDetailsScreen,
-                                        arguments: {
-                                          "eventId": homePageController.homeInfo?.homeData.nearbyEvent[index].eventId,
-                                          "bookStatus": "1",
-                                        },
-                                      );
-                                    },
-                                    child: Container(
-                                      // height: Get.height * 0.37,
-                                      width: Get.width / 1.5,
-                                      margin:
-                                          EdgeInsets.symmetric(horizontal: 8),
-                                      child: Column(
-                                        // mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                      Container(
-                                      height: Get.height / 5.4,
-                                        width: Get.width / 1.4,
-                                        margin: EdgeInsets.all(5),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(20),
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                            "${Config.imageUrl}${homePageController.homeInfo?.homeData.nearbyEvent[index].eventImg ?? ""}",
-
-                                            httpHeaders: {
-                                              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-                                              'Accept': 'image/*',
-                                              'Connection': 'keep-alive',
-                                            },
-
-                                            fit: BoxFit.cover,
-                                            width: Get.width / 1.4,
-                                            height: Get.height / 4.9,
-
-                                            placeholder: (context, url) => Image.asset(
-                                              "assets/ezgif.com-crop.gif",
-                                              fit: BoxFit.cover,
+                                              right: 10,
                                             ),
-
-                                            errorWidget: (context, url, error) => Icon(Icons.error, size: 40),
-
-                                            fadeInDuration: Duration(milliseconds: 400),
-                                          ),
-                                        ),
-                                      ),
-
-                                      Container(
-                                            height: 65,
-                                            width: Get.size.width,
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 15),
-                                            child: Row(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Expanded(
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        homePageController.homeInfo?.homeData.nearbyEvent[index].eventTitle ?? "",
-                                                        maxLines: 2,
-                                                        style: TextStyle(
-                                                          color: BlackColor,
-                                                          fontFamily:
-                                                              FontFamily
-                                                                  .gilroyBold,
-                                                          fontSize: 15,
-                                                          overflow:
-                                                              TextOverflow
-                                                                  .ellipsis,
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 4,
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Image.asset(
-                                                            "assets/Location.png",
-                                                            color: BlackColor,
-                                                            height: 15,
-                                                            width: 15,
-                                                          ),
-                                                          SizedBox(
-                                                            width: 4,
-                                                          ),
-                                                          SizedBox(
-                                                            width: Get.size.width * 0.54,
-                                                            child: Text(
-                                                              homePageController.homeInfo?.homeData.nearbyEvent[index].eventPlaceName ??
-                                                                  "",
-                                                              maxLines: 1,
-                                                              style:
-                                                                  TextStyle(
-                                                                fontFamily:
-                                                                    FontFamily
-                                                                        .gilroyMedium,
-                                                                fontSize: 15,
-                                                                color:
-                                                                    BlackColor,
-                                                                overflow: TextOverflow.ellipsis,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ],
+                                                SizedBox(
+                                                  width: 240,
+                                                  child: Text(
+                                                    homePageController
+                                                            .homeInfo
+                                                            ?.homeData
+                                                            .latestEvent[index]
+                                                            .eventTitle ??
+                                                        "",
+                                                    maxLines: 1,
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          FontFamily.gilroyBold,
+                                                      fontSize: 17,
+                                                      color: WhiteColor,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
                                                   ),
                                                 ),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            child: Divider(
-                                              color: Colors.grey.shade300,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 6,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 15),
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  homePageController.homeInfo?.homeData.nearbyEvent[index].eventSdate ?? "",
-                                                  style: TextStyle(
-                                                    fontFamily: FontFamily
-                                                        .gilroyMedium,
-                                                    color: greytext,
-                                                    fontSize: 14,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: WhiteColor,
-                                        borderRadius:
-                                            BorderRadius.circular(20),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            )
-                          : Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Container(
-                              height: 150,
-                              width: 200,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage("assets/emptyOrder.png")),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              "No Nearby Event placed!",
-                              style: TextStyle(
-                                  fontFamily: FontFamily.gilroyBold,
-                                  color: BlackColor,
-                                  fontSize: 15),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              "Currently you don’t have any Nearby Event.",
-                              style: TextStyle(
-                                  fontFamily: FontFamily.gilroyMedium,
-                                  color: greyColor),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                              children: [
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Text(
-                                  "Monthly Event".tr,
-                                  style: TextStyle(
-                                    fontFamily: FontFamily.gilroyBold,
-                                    color: BlackColor,
-                                    fontSize: 17,
-                                  ),
-                                ),
-                                Spacer(),
-                                TextButton(
-                                  onPressed: () {
-                                    Get.to(LatestEvent(eventStaus: "2"));
-                                  },
-                                  child: Text(
-                                    "See All".tr,
-                                    style: TextStyle(
-                                      fontFamily: FontFamily.gilroyMedium,
-                                      color: gradient.defoultColor,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                              ],
-                            ),
-                      ( homePageController.homeInfo?.homeData.thisMonthEvent ?? []).isNotEmpty
-                          ? SizedBox(
-                              height: Get.height * 0.34,
-                              width: Get.size.width,
-                              child: ListView.builder(
-                                itemCount: homePageController
-                                    .homeInfo?.homeData.thisMonthEvent.length
-                                    .clamp(0, 5),
-                                scrollDirection: Axis.horizontal,
-                                physics: BouncingScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  return InkWell(
-                                    onTap: () async {
-                                      await eventDetailsController.getEventData(
-                                        eventId: homePageController.homeInfo?.homeData.thisMonthEvent[index].eventId,
-                                      );
-                                      Get.toNamed(
-                                        Routes.eventDetailsScreen,
-                                        arguments: {
-                                          "eventId": homePageController
-                                              .homeInfo
-                                              ?.homeData
-                                              .thisMonthEvent[index]
-                                              .eventId,
-                                          "bookStatus": "1",
-                                        },
-                                      );
-                                    },
-                                    child: Container(
-                                      // height: Get.height * 0.37,
-                                      width: Get.width / 1.5,
-                                      margin:
-                                          EdgeInsets.symmetric(horizontal: 8),
-                                      child: Column(
-                                        children: [
-                                      Container(
-                                      height: Get.height / 5.2,
-                                        width: Get.width / 1.4,
-                                        margin: EdgeInsets.all(5),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(20),
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                            "${Config.imageUrl}${homePageController.homeInfo?.homeData.thisMonthEvent[index].eventImg ?? ""}",
-
-                                            httpHeaders: {
-                                              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-                                              'Accept': 'image/*',
-                                              'Connection': 'keep-alive',
-                                            },
-
-                                            fit: BoxFit.cover,
-                                            width: Get.width / 1.4,
-                                            height: Get.height / 4.9,
-
-                                            placeholder: (context, url) => Image.asset(
-                                              "assets/ezgif.com-crop.gif",
-                                              fit: BoxFit.cover,
-                                            ),
-
-                                            errorWidget: (context, url, error) => Icon(Icons.error, size: 40),
-
-                                            fadeInDuration: Duration(milliseconds: 400),
-                                          ),
-                                        ),
-                                      ),
-
-                                      Container(
-                                            height: 65,
-                                            width: Get.size.width,
-                                            alignment: Alignment.center,
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 15),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        homePageController.homeInfo?.homeData.thisMonthEvent[index].eventTitle ?? "",
-                                                        maxLines: 2,
-                                                        style: TextStyle(
-                                                          color: BlackColor,
-                                                          fontFamily:
-                                                              FontFamily
-                                                                  .gilroyBold,
-                                                          fontSize: 15,
-                                                          overflow:
-                                                              TextOverflow
-                                                                  .ellipsis,
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 4,
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Image.asset(
-                                                            "assets/Location.png",
-                                                            color: BlackColor,
-                                                            height: 15,
-                                                            width: 15,
-                                                          ),
-                                                          SizedBox(
-                                                            width: 4,
-                                                          ),
-                                                          SizedBox(
-                                                            width: Get.size.width * 0.54,
-                                                            child: Text(
-                                                              homePageController.homeInfo?.homeData.thisMonthEvent[index].eventPlaceName ?? "",
-                                                              maxLines: 1,
-                                                              style:
-                                                                  TextStyle(
-                                                                fontFamily:
-                                                                    FontFamily
-                                                                        .gilroyMedium,
-                                                                fontSize: 15,
-                                                                color:
-                                                                    BlackColor,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            child: Divider(
-                                              color: Colors.grey.shade300,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 6,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 15),
-                                            child: Row(
-                                              children: [
+                                                SizedBox(height: 8),
                                                 Text(
                                                   homePageController
                                                           .homeInfo
                                                           ?.homeData
-                                                          .thisMonthEvent[
-                                                              index]
+                                                          .latestEvent[index]
                                                           .eventSdate ??
                                                       "",
+                                                  maxLines: 1,
                                                   style: TextStyle(
-                                                    fontFamily: FontFamily
-                                                        .gilroyMedium,
-                                                    color: greytext,
-                                                    fontSize: 14,
+                                                    fontFamily:
+                                                        FontFamily.gilroyMedium,
+                                                    color: WhiteColor,
+                                                    fontSize: 15,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
-                                                )
+                                                ),
+                                                SizedBox(height: 5),
+                                                Row(
+                                                  children: [
+                                                    Image.asset(
+                                                      "assets/Location.png",
+                                                      color: WhiteColor,
+                                                      height: 15,
+                                                      width: 15,
+                                                    ),
+                                                    SizedBox(width: 4),
+                                                    SizedBox(
+                                                      width: 210,
+                                                      child: Text(
+                                                        homePageController
+                                                                .homeInfo
+                                                                ?.homeData
+                                                                .latestEvent[index]
+                                                                .eventPlaceName ??
+                                                            "",
+                                                        maxLines: 1,
+                                                        style: TextStyle(
+                                                          fontFamily: FontFamily
+                                                              .gilroyMedium,
+                                                          fontSize: 15,
+                                                          color: WhiteColor,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ],
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: WhiteColor,
-                                        borderRadius:
-                                            BorderRadius.circular(20),
-                                      ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  );
-                                },
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    color: WhiteColor,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      : Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: 20),
+                              Container(
+                                height: 150,
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage("assets/emptyOrder.png"),
+                                  ),
+                                ),
                               ),
-                            )
-                          : Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Container(
-                              height: 150,
-                              width: 200,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage("assets/emptyOrder.png")),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              "No Monthly Event placed!",
-                              style: TextStyle(
+                              SizedBox(height: 10),
+                              Text(
+                                "No Latest Event placed!",
+                                style: TextStyle(
                                   fontFamily: FontFamily.gilroyBold,
                                   color: BlackColor,
-                                  fontSize: 15),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              "Currently you don’t have any Monthly Event.",
-                              style: TextStyle(
+                                  fontSize: 15,
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                "Currently you don’t have any Latest Event.",
+                                style: TextStyle(
                                   fontFamily: FontFamily.gilroyMedium,
-                                  color: greyColor),
-                            ),
-                          ],
+                                  color: greyColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                  Row(
+                    children: [
+                      SizedBox(width: 15),
+                      Text(
+                        "Nearby Event".tr,
+                        style: TextStyle(
+                          fontFamily: FontFamily.gilroyBold,
+                          color: BlackColor,
+                          fontSize: 17,
                         ),
                       ),
-                      Row(
-                              children: [
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Text(
-                                  "Upcoming Event".tr,
-                                  style: TextStyle(
-                                    fontFamily: FontFamily.gilroyBold,
-                                    color: BlackColor,
-                                    fontSize: 17,
-                                  ),
-                                ),
-                                Spacer(),
-                                TextButton(
-                                  onPressed: () {
-                                    Get.to(UpComingEvent());
-                                  },
-                                  child: Text(
-                                    "See All".tr,
-                                    style: TextStyle(
-                                      fontFamily: FontFamily.gilroyMedium,
-                                      color: gradient.defoultColor,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                              ],
-                            ),
-                      ( homePageController.homeInfo?.homeData.upcomingEvent ?? []).isNotEmpty
-                          ? ListView.builder(
-                              itemCount: homePageController
-                                  .homeInfo?.homeData.upcomingEvent.length
-                                  .clamp(0, 5),
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              padding: EdgeInsets.zero,
-                              itemBuilder: (context, index) {
-                                return InkWell(
-                                  onTap: () async {
-                                    await eventDetailsController.getEventData(
-                                      eventId: homePageController
+                      Spacer(),
+                      TextButton(
+                        onPressed: () {
+                          Get.to(LatestEvent(eventStaus: "3"));
+                        },
+                        child: Text(
+                          "See All".tr,
+                          style: TextStyle(
+                            fontFamily: FontFamily.gilroyMedium,
+                            color: gradient.defoultColor,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                    ],
+                  ),
+                  (homePageController.homeInfo?.homeData.nearbyEvent ?? [])
+                          .isNotEmpty
+                      ? Container(
+                          height: Get.height * 0.34,
+                          width: Get.size.width,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: homePageController
+                                .homeInfo
+                                ?.homeData
+                                .nearbyEvent
+                                .length
+                                .clamp(0, 5),
+                            scrollDirection: Axis.horizontal,
+                            padding: EdgeInsets.zero,
+                            physics: BouncingScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () => _authNavigate(() async {
+                                  await eventDetailsController.getEventData(
+                                    eventId: homePageController
+                                        .homeInfo
+                                        ?.homeData
+                                        .nearbyEvent[index]
+                                        .eventId,
+                                  );
+                                  Get.toNamed(
+                                    Routes.eventDetailsScreen,
+                                    arguments: {
+                                      "eventId": homePageController
                                           .homeInfo
                                           ?.homeData
-                                          .upcomingEvent[index]
+                                          .nearbyEvent[index]
                                           .eventId,
-                                    );
-                                    Get.toNamed(
-                                      Routes.eventDetailsScreen,
-                                      arguments: {
-                                        "eventId": homePageController
-                                            .homeInfo
-                                            ?.homeData
-                                            .upcomingEvent[index]
-                                            .eventId,
-                                        "bookStatus": "1",
-                                      },
-                                    );
+                                      "bookStatus": "1",
+                                    },
+                                  );
+                                }),
+                                child: Container(
+                                  // height: Get.height * 0.37,
+                                  width: Get.width / 1.5,
+                                  margin: EdgeInsets.symmetric(horizontal: 8),
+                                  child: Column(
+                                    // mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        height: Get.height / 5.4,
+                                        width: Get.width / 1.4,
+                                        margin: EdgeInsets.all(5),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                "${Config.imageUrl}${homePageController.homeInfo?.homeData.nearbyEvent[index].eventImg ?? ""}",
+
+                                            httpHeaders: {
+                                              'User-Agent':
+                                                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                              'Accept': 'image/*',
+                                              'Connection': 'keep-alive',
+                                            },
+
+                                            fit: BoxFit.cover,
+                                            width: Get.width / 1.4,
+                                            height: Get.height / 4.9,
+
+                                            placeholder: (context, url) =>
+                                                Image.asset(
+                                                  "assets/ezgif.com-crop.gif",
+                                                  fit: BoxFit.cover,
+                                                ),
+
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error, size: 40),
+
+                                            fadeInDuration: Duration(
+                                              milliseconds: 400,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      Container(
+                                        height: 65,
+                                        width: Get.size.width,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 15,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    homePageController
+                                                            .homeInfo
+                                                            ?.homeData
+                                                            .nearbyEvent[index]
+                                                            .eventTitle ??
+                                                        "",
+                                                    maxLines: 2,
+                                                    style: TextStyle(
+                                                      color: BlackColor,
+                                                      fontFamily:
+                                                          FontFamily.gilroyBold,
+                                                      fontSize: 15,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 4),
+                                                  Row(
+                                                    children: [
+                                                      Image.asset(
+                                                        "assets/Location.png",
+                                                        color: BlackColor,
+                                                        height: 15,
+                                                        width: 15,
+                                                      ),
+                                                      SizedBox(width: 4),
+                                                      SizedBox(
+                                                        width:
+                                                            Get.size.width *
+                                                            0.54,
+                                                        child: Text(
+                                                          homePageController
+                                                                  .homeInfo
+                                                                  ?.homeData
+                                                                  .nearbyEvent[index]
+                                                                  .eventPlaceName ??
+                                                              "",
+                                                          maxLines: 1,
+                                                          style: TextStyle(
+                                                            fontFamily: FontFamily
+                                                                .gilroyMedium,
+                                                            fontSize: 15,
+                                                            color: BlackColor,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                        ),
+                                        child: Divider(
+                                          color: Colors.grey.shade300,
+                                        ),
+                                      ),
+                                      SizedBox(height: 6),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 15,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              homePageController
+                                                      .homeInfo
+                                                      ?.homeData
+                                                      .nearbyEvent[index]
+                                                      .eventSdate ??
+                                                  "",
+                                              style: TextStyle(
+                                                fontFamily:
+                                                    FontFamily.gilroyMedium,
+                                                color: greytext,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: WhiteColor,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      : Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: 20),
+                              Container(
+                                height: 150,
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage("assets/emptyOrder.png"),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                "No Nearby Event placed!",
+                                style: TextStyle(
+                                  fontFamily: FontFamily.gilroyBold,
+                                  color: BlackColor,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                "Currently you don’t have any Nearby Event.",
+                                style: TextStyle(
+                                  fontFamily: FontFamily.gilroyMedium,
+                                  color: greyColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                  Row(
+                    children: [
+                      SizedBox(width: 15),
+                      Text(
+                        "Monthly Event".tr,
+                        style: TextStyle(
+                          fontFamily: FontFamily.gilroyBold,
+                          color: BlackColor,
+                          fontSize: 17,
+                        ),
+                      ),
+                      Spacer(),
+                      TextButton(
+                        onPressed: () {
+                          Get.to(LatestEvent(eventStaus: "2"));
+                        },
+                        child: Text(
+                          "See All".tr,
+                          style: TextStyle(
+                            fontFamily: FontFamily.gilroyMedium,
+                            color: gradient.defoultColor,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                    ],
+                  ),
+                  (homePageController.homeInfo?.homeData.thisMonthEvent ?? [])
+                          .isNotEmpty
+                      ? SizedBox(
+                          height: Get.height * 0.34,
+                          width: Get.size.width,
+                          child: ListView.builder(
+                            itemCount: homePageController
+                                .homeInfo
+                                ?.homeData
+                                .thisMonthEvent
+                                .length
+                                .clamp(0, 5),
+                            scrollDirection: Axis.horizontal,
+                            physics: BouncingScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () => _authNavigate(() async {
+                                  await eventDetailsController.getEventData(
+                                    eventId: homePageController
+                                        .homeInfo
+                                        ?.homeData
+                                        .thisMonthEvent[index]
+                                        .eventId,
+                                  );
+                                  Get.toNamed(
+                                    Routes.eventDetailsScreen,
+                                    arguments: {
+                                      "eventId": homePageController
+                                          .homeInfo
+                                          ?.homeData
+                                          .thisMonthEvent[index]
+                                          .eventId,
+                                      "bookStatus": "1",
+                                    },
+                                  );
+                                }),
+
+                                child: Container(
+                                  // height: Get.height * 0.37,
+                                  width: Get.width / 1.5,
+                                  margin: EdgeInsets.symmetric(horizontal: 8),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: Get.height / 5.2,
+                                        width: Get.width / 1.4,
+                                        margin: EdgeInsets.all(5),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                "${Config.imageUrl}${homePageController.homeInfo?.homeData.thisMonthEvent[index].eventImg ?? ""}",
+
+                                            httpHeaders: {
+                                              'User-Agent':
+                                                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                              'Accept': 'image/*',
+                                              'Connection': 'keep-alive',
+                                            },
+
+                                            fit: BoxFit.cover,
+                                            width: Get.width / 1.4,
+                                            height: Get.height / 4.9,
+
+                                            placeholder: (context, url) =>
+                                                Image.asset(
+                                                  "assets/ezgif.com-crop.gif",
+                                                  fit: BoxFit.cover,
+                                                ),
+
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error, size: 40),
+
+                                            fadeInDuration: Duration(
+                                              milliseconds: 400,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      Container(
+                                        height: 65,
+                                        width: Get.size.width,
+                                        alignment: Alignment.center,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 15,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    homePageController
+                                                            .homeInfo
+                                                            ?.homeData
+                                                            .thisMonthEvent[index]
+                                                            .eventTitle ??
+                                                        "",
+                                                    maxLines: 2,
+                                                    style: TextStyle(
+                                                      color: BlackColor,
+                                                      fontFamily:
+                                                          FontFamily.gilroyBold,
+                                                      fontSize: 15,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 4),
+                                                  Row(
+                                                    children: [
+                                                      Image.asset(
+                                                        "assets/Location.png",
+                                                        color: BlackColor,
+                                                        height: 15,
+                                                        width: 15,
+                                                      ),
+                                                      SizedBox(width: 4),
+                                                      SizedBox(
+                                                        width:
+                                                            Get.size.width *
+                                                            0.54,
+                                                        child: Text(
+                                                          homePageController
+                                                                  .homeInfo
+                                                                  ?.homeData
+                                                                  .thisMonthEvent[index]
+                                                                  .eventPlaceName ??
+                                                              "",
+                                                          maxLines: 1,
+                                                          style: TextStyle(
+                                                            fontFamily: FontFamily
+                                                                .gilroyMedium,
+                                                            fontSize: 15,
+                                                            color: BlackColor,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                        ),
+                                        child: Divider(
+                                          color: Colors.grey.shade300,
+                                        ),
+                                      ),
+                                      SizedBox(height: 6),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 15,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              homePageController
+                                                      .homeInfo
+                                                      ?.homeData
+                                                      .thisMonthEvent[index]
+                                                      .eventSdate ??
+                                                  "",
+                                              style: TextStyle(
+                                                fontFamily:
+                                                    FontFamily.gilroyMedium,
+                                                color: greytext,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: WhiteColor,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      : Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: 20),
+                              Container(
+                                height: 150,
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage("assets/emptyOrder.png"),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                "No Monthly Event placed!",
+                                style: TextStyle(
+                                  fontFamily: FontFamily.gilroyBold,
+                                  color: BlackColor,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                "Currently you don’t have any Monthly Event.",
+                                style: TextStyle(
+                                  fontFamily: FontFamily.gilroyMedium,
+                                  color: greyColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                  Row(
+                    children: [
+                      SizedBox(width: 15),
+                      Text(
+                        "Upcoming Event".tr,
+                        style: TextStyle(
+                          fontFamily: FontFamily.gilroyBold,
+                          color: BlackColor,
+                          fontSize: 17,
+                        ),
+                      ),
+                      Spacer(),
+                      TextButton(
+                        onPressed: () {
+                          Get.to(UpComingEvent());
+                        },
+                        child: Text(
+                          "See All".tr,
+                          style: TextStyle(
+                            fontFamily: FontFamily.gilroyMedium,
+                            color: gradient.defoultColor,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                    ],
+                  ),
+                  (homePageController.homeInfo?.homeData.upcomingEvent ?? [])
+                          .isNotEmpty
+                      ? ListView.builder(
+                          itemCount: homePageController
+                              .homeInfo
+                              ?.homeData
+                              .upcomingEvent
+                              .length
+                              .clamp(0, 5),
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          padding: EdgeInsets.zero,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () => _authNavigate(() async {
+                                await eventDetailsController.getEventData(
+                                  eventId: homePageController
+                                      .homeInfo
+                                      ?.homeData
+                                      .upcomingEvent[index]
+                                      .eventId,
+                                );
+                                Get.toNamed(
+                                  Routes.eventDetailsScreen,
+                                  arguments: {
+                                    "eventId": homePageController
+                                        .homeInfo
+                                        ?.homeData
+                                        .upcomingEvent[index]
+                                        .eventId,
+                                    "bookStatus": "1",
                                   },
-                                  child: Container(
-                                    height: 120,
-                                    width: Get.size.width,
-                                    margin: EdgeInsets.only(
-                                        left: 10,
-                                        right: 10,
-                                        bottom: 10,
-                                        top: index == 0 ? 0 : 10),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          height: 120,
-                                          width: 100,
-                                          margin: EdgeInsets.all(8),
-                                          alignment: Alignment.center,
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(15),
-                                            child: CachedNetworkImage(
-                                              imageUrl:
+                                );
+                              }),
+                              child: Container(
+                                height: 120,
+                                width: Get.size.width,
+                                margin: EdgeInsets.only(
+                                  left: 10,
+                                  right: 10,
+                                  bottom: 10,
+                                  top: index == 0 ? 0 : 10,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      height: 120,
+                                      width: 100,
+                                      margin: EdgeInsets.all(8),
+                                      alignment: Alignment.center,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(15),
+                                        child: CachedNetworkImage(
+                                          imageUrl:
                                               "${Config.imageUrl}${homePageController.homeInfo?.homeData.upcomingEvent[index].eventImg}",
 
-                                              httpHeaders: {
-                                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-                                                'Accept': 'image/*',
-                                                'Connection': 'keep-alive',
-                                              },
+                                          httpHeaders: {
+                                            'User-Agent':
+                                                'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                            'Accept': 'image/*',
+                                            'Connection': 'keep-alive',
+                                          },
 
-                                              height: 120,
-                                              width: 100,
-                                              fit: BoxFit.cover,
+                                          height: 120,
+                                          width: 100,
+                                          fit: BoxFit.cover,
 
-                                              placeholder: (context, url) => Image.asset(
+                                          placeholder: (context, url) =>
+                                              Image.asset(
                                                 "assets/ezgif.com-crop.gif",
                                                 height: 120,
                                                 width: 100,
                                                 fit: BoxFit.cover,
                                               ),
 
-                                              errorWidget: (context, url, error) => Icon(Icons.error, size: 40),
-                                            ),
-                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error, size: 40),
                                         ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                      ),
+                                    ),
+                                    SizedBox(width: 5),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Row(
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      homePageController
-                                                              .homeInfo
-                                                              ?.homeData
-                                                              .upcomingEvent[
-                                                                  index]
-                                                              .eventTitle ??
-                                                          "",
-                                                      maxLines: 1,
-                                                      style: TextStyle(
-                                                        fontFamily: FontFamily
-                                                            .gilroyBold,
-                                                        fontSize: 15,
-                                                        color: BlackColor,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      homePageController
-                                                              .homeInfo
-                                                              ?.homeData
-                                                              .upcomingEvent[
-                                                                  index]
-                                                              .eventSdate ??
-                                                          "",
-                                                      maxLines: 1,
-                                                      style: TextStyle(
-                                                        fontFamily: FontFamily
-                                                            .gilroyMedium,
-                                                        fontSize: 14,
-                                                        color: greytext,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                height: 3,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Image.asset(
-                                                    "assets/Location.png",
+                                              Expanded(
+                                                child: Text(
+                                                  homePageController
+                                                          .homeInfo
+                                                          ?.homeData
+                                                          .upcomingEvent[index]
+                                                          .eventTitle ??
+                                                      "",
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                        FontFamily.gilroyBold,
+                                                    fontSize: 15,
                                                     color: BlackColor,
-                                                    height: 15,
-                                                    width: 15,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
-                                                  SizedBox(
-                                                    width: 4,
-                                                  ),
-                                                  SizedBox(
-                                                    width:
-                                                        Get.size.width * 0.55,
-                                                    child: Text(
-                                                      homePageController
-                                                              .homeInfo
-                                                              ?.homeData
-                                                              .upcomingEvent[
-                                                                  index]
-                                                              .eventPlaceName ??
-                                                          "",
-                                                      maxLines: 1,
-                                                      style: TextStyle(
-                                                        fontFamily: FontFamily
-                                                            .gilroyMedium,
-                                                        fontSize: 15,
-                                                        color: BlackColor,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
+                                                ),
+                                              ),
                                             ],
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                      ],
+                                          SizedBox(height: 5),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  homePageController
+                                                          .homeInfo
+                                                          ?.homeData
+                                                          .upcomingEvent[index]
+                                                          .eventSdate ??
+                                                      "",
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                        FontFamily.gilroyMedium,
+                                                    fontSize: 14,
+                                                    color: greytext,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 3),
+                                          Row(
+                                            children: [
+                                              Image.asset(
+                                                "assets/Location.png",
+                                                color: BlackColor,
+                                                height: 15,
+                                                width: 15,
+                                              ),
+                                              SizedBox(width: 4),
+                                              SizedBox(
+                                                width: Get.size.width * 0.55,
+                                                child: Text(
+                                                  homePageController
+                                                          .homeInfo
+                                                          ?.homeData
+                                                          .upcomingEvent[index]
+                                                          .eventPlaceName ??
+                                                      "",
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                        FontFamily.gilroyMedium,
+                                                    fontSize: 15,
+                                                    color: BlackColor,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: WhiteColor,
-                                    ),
-                                  ),
-                                );
-                              },
-                            )
-                          : Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Container(
-                              height: 150,
-                              width: 200,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage("assets/emptyOrder.png")),
+                                    SizedBox(width: 10),
+                                  ],
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: WhiteColor,
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              "No Upcoming Event placed!",
-                              style: TextStyle(
+                            );
+                          },
+                        )
+                      : Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: 20),
+                              Container(
+                                height: 150,
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage("assets/emptyOrder.png"),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                "No Upcoming Event placed!",
+                                style: TextStyle(
                                   fontFamily: FontFamily.gilroyBold,
                                   color: BlackColor,
-                                  fontSize: 15),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              "Currently you don’t have any Upcoming Event.",
-                              style: TextStyle(
+                                  fontSize: 15,
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                "Currently you don’t have any Upcoming Event.",
+                                style: TextStyle(
                                   fontFamily: FontFamily.gilroyMedium,
-                                  color: greyColor),
-                            ),
-                          ],
+                                  color: greyColor,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-
-      }),
+                  SizedBox(height: 20),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
-
   }
 }

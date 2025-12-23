@@ -17,6 +17,7 @@ import '../firebase/chat_page.dart';
 import '../model/fontfamily_model.dart';
 import '../utils/Colors.dart';
 
+import '../utils/auth_helper.dart';
 import 'favorites/favorites_screen.dart';
 import 'home_screen.dart';
 import 'map_screen.dart';
@@ -31,7 +32,8 @@ class BottomBarScreen extends StatefulWidget {
 
 int selectedIndex = 0;
 
-class _BottomBarScreenState extends State<BottomBarScreen> with WidgetsBindingObserver {
+class _BottomBarScreenState extends State<BottomBarScreen>
+    with WidgetsBindingObserver {
   List<Widget> myChilders = [
     HomeScreen(),
     FavoritesScreen(),
@@ -42,6 +44,16 @@ class _BottomBarScreenState extends State<BottomBarScreen> with WidgetsBindingOb
   int currenIndex = 0;
 
   var isLogin;
+
+  //---------------kripal-----naviagte-to-login-screen-if-not-logged-in----------------
+  void _authNavigate(VoidCallback onAuthenticated) {
+    AuthHelper.checkAuthAndExecute(
+      onAuthenticated: onAuthenticated,
+      context: context,
+    );
+  }
+
+  //---------------kripal-----naviagte-to-login-screen-if-not-logged-in----------------
 
   @override
   void initState() {
@@ -111,140 +123,173 @@ class _BottomBarScreenState extends State<BottomBarScreen> with WidgetsBindingOb
         //     elevation: 4.0,
         //   ),
         // ),
-        floatingActionButton: GetBuilder<LoginControllerssss>(builder: (context) {
-          return selectedIndex == 0
-              ? Container(
-                  height: 40,
-                  width: 150,
-                  child: Row(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            currenIndex = 0;
-                          });
-                        },
-                        child: Container(
-                          height: 40,
-                          width: 70,
-                          margin: EdgeInsets.only(top: 4, bottom: 4, left: 4),
-                          alignment: Alignment.center,
-                          child: Text(
-                            "List".tr,
-                            style: TextStyle(
-                              color: WhiteColor,
-                              fontFamily: FontFamily.gilroyMedium,
+        floatingActionButton: GetBuilder<LoginControllerssss>(
+          builder: (context) {
+            return selectedIndex == 0
+                ? Container(
+                    height: 40,
+                    width: 150,
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: () => _authNavigate(
+                            () => setState(() {
+                              currenIndex = 0;
+                            }),
+                          ),
+
+                          child: Container(
+                            height: 40,
+                            width: 70,
+                            margin: EdgeInsets.only(top: 4, bottom: 4, left: 4),
+                            alignment: Alignment.center,
+                            child: Text(
+                              "List".tr,
+                              style: TextStyle(
+                                color: WhiteColor,
+                                fontFamily: FontFamily.gilroyMedium,
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: currenIndex == 0
+                                  ? Color.fromARGB(255, 255, 195, 43)
+                                  : transparent,
                             ),
                           ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            color: currenIndex == 0
-                                ? Color.fromARGB(255, 255, 195, 43)
-                                : transparent,
-                          ),
                         ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(Get.context!).push(_createRoute());
-                          setState(() {
-                            currenIndex = 1;
-                          });
-                        },
-                        child: Container(
-                          height: 40,
-                          width: 70,
-                          alignment: Alignment.center,
-                          margin: EdgeInsets.only(top: 4, bottom: 4, right: 4),
-                          child: Text(
-                            "Map".tr,
-                            style: TextStyle(
-                              color: WhiteColor,
-                              fontFamily: FontFamily.gilroyMedium,
+                        InkWell(
+                          onTap: () => _authNavigate(() {
+                            Navigator.of(Get.context!).push(_createRoute());
+                            setState(() {
+                              currenIndex = 1;
+                            });
+                          }),
+
+                          child: Container(
+                            height: 40,
+                            width: 70,
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.only(
+                              top: 4,
+                              bottom: 4,
+                              right: 4,
+                            ),
+                            child: Text(
+                              "Map".tr,
+                              style: TextStyle(
+                                color: WhiteColor,
+                                fontFamily: FontFamily.gilroyMedium,
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: currenIndex == 1
+                                  ? Color.fromARGB(255, 255, 195, 43)
+                                  : transparent,
                             ),
                           ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            color: currenIndex == 1
-                                ? Color.fromARGB(255, 255, 195, 43)
-                                : transparent,
-                          ),
                         ),
+                      ],
+                    ),
+                    decoration: BoxDecoration(
+                      color: ColorHelperClass.getColorFromHex(
+                        ColorResources.primary_color,
                       ),
-                    ],
-                  ),
-                  decoration: BoxDecoration(
-                    color: ColorHelperClass.getColorFromHex(ColorResources.primary_color),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                )
-              : SizedBox();
-        }),
-        bottomNavigationBar: GetBuilder<LoginControllerssss>(builder: (context) {
-          return BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            unselectedItemColor: greytextbottom,
-             backgroundColor: BlackColor,
-            elevation: 0,
-            selectedLabelStyle: const TextStyle(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  )
+                : SizedBox();
+          },
+        ),
+        bottomNavigationBar: GetBuilder<LoginControllerssss>(
+          builder: (context) {
+            return BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              unselectedItemColor: greytextbottom,
+              backgroundColor: BlackColor,
+              elevation: 0,
+              selectedLabelStyle: const TextStyle(
                 fontFamily: 'Gilroy Bold',
                 // fontWeight: FontWeight.bold,
-                fontSize: 12),
-            fixedColor: ColorHelperClass.getColorFromHex(ColorResources.primary_color2),
-            unselectedLabelStyle: const TextStyle(
-              fontFamily: 'Gilroy Medium',
-            ),
-            currentIndex: selectedIndex,
-            landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
-            showSelectedLabels: true,
-            showUnselectedLabels: true,
-            items: [
-              BottomNavigationBarItem(
-                icon: Image.asset(
-                  "assets/home-dash.png",
-                  color: selectedIndex == 0 ? ColorHelperClass.getColorFromHex(ColorResources.primary_color) : greytextbottom,
-                  height: Get.size.height / 35,
-                ),
-                label: 'Home'.tr,
+                fontSize: 12,
               ),
-              BottomNavigationBarItem(
-                icon: Image.asset(
-                  "assets/Love.png",
-                  color: selectedIndex == 1 ? ColorHelperClass.getColorFromHex(ColorResources.primary_color) : greytextbottom,
-                  height: Get.size.height / 35,
-                ),
-                label: 'Favorite'.tr,
+              fixedColor: ColorHelperClass.getColorFromHex(
+                ColorResources.primary_color2,
               ),
-              BottomNavigationBarItem(
-                icon: Image.asset(
-                  "assets/Ticket.png",
-                  color: selectedIndex == 2 ?ColorHelperClass.getColorFromHex(ColorResources.primary_color) : greytextbottom,
-                  height: Get.size.height / 35,
-                ),
-                label: 'Ticket'.tr,
+              unselectedLabelStyle: const TextStyle(
+                fontFamily: 'Gilroy Medium',
               ),
-              BottomNavigationBarItem(
-                icon: Image.asset(
-                  "assets/Profile.png",
-                  color: selectedIndex == 3 ?ColorHelperClass.getColorFromHex(ColorResources.primary_color) : greytextbottom,
-                  height: Get.size.height / 35,
+              currentIndex: selectedIndex,
+              landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
+              showSelectedLabels: true,
+              showUnselectedLabels: true,
+              items: [
+                BottomNavigationBarItem(
+                  icon: Image.asset(
+                    "assets/home-dash.png",
+                    color: selectedIndex == 0
+                        ? ColorHelperClass.getColorFromHex(
+                            ColorResources.primary_color,
+                          )
+                        : greytextbottom,
+                    height: Get.size.height / 35,
+                  ),
+                  label: 'Home'.tr,
                 ),
-                label: 'Profile'.tr,
-              ),
-            ],
-            onTap: (index) {
-              setState(() {});
-              // if (isLogin != null) {
+                BottomNavigationBarItem(
+                  icon: Image.asset(
+                    "assets/Love.png",
+                    color: selectedIndex == 1
+                        ? ColorHelperClass.getColorFromHex(
+                            ColorResources.primary_color,
+                          )
+                        : greytextbottom,
+                    height: Get.size.height / 35,
+                  ),
+                  label: 'Favorite'.tr,
+                ),
+                BottomNavigationBarItem(
+                  icon: Image.asset(
+                    "assets/Ticket.png",
+                    color: selectedIndex == 2
+                        ? ColorHelperClass.getColorFromHex(
+                            ColorResources.primary_color,
+                          )
+                        : greytextbottom,
+                    height: Get.size.height / 35,
+                  ),
+                  label: 'Ticket'.tr,
+                ),
+                BottomNavigationBarItem(
+                  icon: Image.asset(
+                    "assets/Profile.png",
+                    color: selectedIndex == 3
+                        ? ColorHelperClass.getColorFromHex(
+                            ColorResources.primary_color,
+                          )
+                        : greytextbottom,
+                    height: Get.size.height / 35,
+                  ),
+                  label: 'Profile'.tr,
+                ),
+              ],
+              onTap: (index) => _authNavigate(() {
+                setState(() {});
+                // if (isLogin != null) {
                 selectedIndex = index;
-              // } else {
-              //   index != 0 ? Get.to(() => LoginView()) : const SizedBox();
-            //  }
-            },
-          );
-        }),
-        body: GetBuilder<LoginControllerssss>(builder: (context) {
-          return myChilders[selectedIndex];
-        }),
+                // } else {
+                //   index != 0 ? Get.to(() => LoginView()) : const SizedBox();
+                //  }
+              }),
+            );
+          },
+        ),
+        body: GetBuilder<LoginControllerssss>(
+          builder: (context) {
+            return myChilders[selectedIndex];
+          },
+        ),
       ),
     );
   }
@@ -257,13 +302,12 @@ class _BottomBarScreenState extends State<BottomBarScreen> with WidgetsBindingOb
         const end = Offset.zero;
         const curve = Curves.ease;
 
-        var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var tween = Tween(
+          begin: begin,
+          end: end,
+        ).chain(CurveTween(curve: curve));
 
-        return SlideTransition(
-          position: animation.drive(tween),
-          child: child,
-        );
+        return SlideTransition(position: animation.drive(tween), child: child);
       },
     );
   }
