@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:magicmate_user/screen/auth_screen/login_view.dart';
@@ -20,14 +22,16 @@ class AuthHelper {
   ///   },
   /// ),
   /// ```
+  /// //---------kripal------------this-is-wokring-and-used-------------------------
   static Future<void> checkAuthAndExecute({
     required BuildContext context,
     required VoidCallback onAuthenticated,
     VoidCallback? onNotAuthenticated,
   }) async {
-    bool isLoggedIn = await SessionManager.isLoggedIn();
-
-    if (isLoggedIn) {
+    var isLoggedInData = await SessionManager.getSession();
+    bool isUserLoggedIn = isLoggedInData!.loginid != null && isLoggedInData.loginid != 0;
+    print('debugggggggggggggggggggg ${jsonEncode(isLoggedInData.loginid != null || isLoggedInData.loginid != 0)}');
+    if (isUserLoggedIn) {
       // User is logged in, execute the callback
       onAuthenticated();
     } else {
@@ -36,7 +40,7 @@ class AuthHelper {
         onNotAuthenticated();
       } else {
         // Default behavior: Navigate to login screen
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => LoginView()),
         );
