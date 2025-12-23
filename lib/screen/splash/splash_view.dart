@@ -68,9 +68,9 @@ class _SplashViewState extends State<SplashView>
     Timer(Duration(seconds: 3), () async {
       final prefs = await SharedPreferences.getInstance();
       final seenIntro = prefs.getBool('seenIntro') ?? false;
-      print(
-        'login debuggggggggggggggggg ${jsonEncode(userData)} ${userData?.loginid.toString()} ${jsonEncode(seenIntro)}',
-      );
+      // print(
+      //   'login debuggggggggggggggggg ${jsonEncode(userData)} ${userData?.loginid.toString()} ${jsonEncode(seenIntro)}',
+      // );
       if (!seenIntro) {
         // Show intro screen once
 
@@ -79,6 +79,7 @@ class _SplashViewState extends State<SplashView>
           MaterialPageRoute(builder: (_) => IntroductionScreen()),
         );
       } else if (userData?.loginid == null || userData?.loginid == 0) {
+        // this conditon is redundent remove in future by kripal singh
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => BottomBarScreen()),
