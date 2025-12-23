@@ -146,7 +146,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                         backgroundColor: ColorHelperClass.getColorFromHex(ColorResources.primary_color),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                       ),
-                      child: Text(AppConstants.login,
+                      child: Text(AppConstants.next,
                         style: TextStyleClass.black,
                       ),
                     )

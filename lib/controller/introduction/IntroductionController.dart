@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:magicmate_user/screen/auth_screen/login_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../screen/bottombar_screen.dart';
+
 
 class IntroductionController extends GetxController{
   final pageController = PageController();
@@ -27,11 +29,14 @@ class IntroductionController extends GetxController{
     } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('seenIntro', true);
-
       Navigator.pushReplacement(
         context!,
-        MaterialPageRoute(builder: (_) => LoginView()),
+        MaterialPageRoute(builder: (_) => BottomBarScreen()),
       );
+      // Navigator.pushReplacement(
+      //   context!,
+      //   MaterialPageRoute(builder: (_) => LoginView()),
+      // );
     }
   }
 }
