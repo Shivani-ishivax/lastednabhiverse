@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last, prefer_const_literals_to_create_immutables
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -85,15 +86,23 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                       margin: EdgeInsets.all(10),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(15),
-                                        child: FadeInImage.assetNetwork(
-                                          fadeInCurve: Curves.easeInCirc,
-                                          placeholder:
-                                              "assets/ezgif.com-crop.gif",
-                                          height: 140,
-                                          image:
-                                              "${Config.imageUrl}${favoriteController.favList[index].eventImg}",
-                                          fit: BoxFit.cover,
-                                        ),
+                                        child: CachedNetworkImage(
+                                            imageUrl:  "${Config.imageUrl}${favoriteController.favList[index].eventImg}",
+                                            httpHeaders: {
+                                              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                              'Accept': 'image/*',
+                                              'Connection': 'keep-alive',
+                                            },
+                                            height: 140,
+                                            fit: BoxFit.cover,
+                                            placeholder: (context, url) => SizedBox(
+                                              height: 10,
+                                              width: 10,
+                                              child: CircularProgressIndicator(strokeWidth: 2,color: Colors.orange,),
+                                            ),
+                                          )
+
+
                                       ),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(15),

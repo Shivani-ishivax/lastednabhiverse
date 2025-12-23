@@ -47,7 +47,8 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
   late GoogleMapController
       mapController; //contrller for Google map //markers for google map
   LatLng showLocation = LatLng(27.7089427, 85.3086209);
-
+  var lat = 26.9124;
+  var lng= 75.7873;
   final List<Marker> _markers = <Marker>[];
 
   Future<Uint8List> getImages(String path, int width) async {
@@ -58,17 +59,27 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 
-  loadData() async {
+  Future<void>loadData() async {
     final Uint8List markIcons = await getImages("assets/MapPin.png", 50);
+     lat = safeParse(
+      eventDetailsController.eventInfo?.eventData.eventLatitude,
+      26.9124,   // default Jaipur lat
+    );
+
+   lng = safeParse(
+      eventDetailsController.eventInfo?.eventData.eventLongtitude,
+      75.7873,   // default Jaipur lng
+    );
+   setState(() {
+
+   });
       _markers.add(
       Marker(
              markerId: MarkerId(showLocation.toString()),
 
         icon: BitmapDescriptor.fromBytes(markIcons),
-               position: LatLng(
-          double.parse(
-              eventDetailsController.eventInfo?.eventData.eventLatitude ?? ""),
-          double.parse(eventDetailsController.eventInfo?.eventData.eventLongtitude ?? ""),
+               position: LatLng(lat, lng
+
         ),
         infoWindow: InfoWindow(),
       ),
@@ -79,7 +90,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    loadData();
+     loadData();
 
   }
 
@@ -557,7 +568,8 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                           ),
                                         );
                                       },
-                                      child: Column(
+                                      child:  eventDetailsController.eventInfo?.eventData.sponsoreName!="" &&  eventDetailsController.eventInfo?.eventData.sponsoreName!="null"?
+                                      Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
@@ -630,7 +642,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                             ],
                                           ),
                                         ],
-                                      ),
+                                      ): SizedBox(),
                                     ),
                                     InkWell(
                                       onTap: () {
@@ -1179,16 +1191,24 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                               child: ClipRRect(
                                                 borderRadius:
                                                     BorderRadius.circular(15),
-                                                child: FadeInImage.assetNetwork(
-                                                  placeholder:
-                                                      "assets/ezgif.com-crop.gif",
-                                                  placeholderFit: BoxFit.cover,
-                                                  image:
-                                                      "${Config.imageUrl}${eventDetailsController.eventInfo?.eventGallery[index] ?? ""}",
-                                                  height: 100,
-                                                  width: 100,
-                                                  fit: BoxFit.cover,
-                                                ),
+                                                child: CachedNetworkImage(
+                                                    imageUrl:  "${Config.imageUrl}${eventDetailsController.eventInfo?.eventGallery[index] ?? ""}",
+                                                    httpHeaders: {
+                                                      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                                      'Accept': 'image/*',
+                                                      'Connection': 'keep-alive',
+                                                    },
+                                                    height: 100,
+                                                    width: 100,
+                                                    fit: BoxFit.cover,
+                                                    placeholder: (context, url) => SizedBox(
+                                                      height: 10,
+                                                      width: 10,
+                                                      child: CircularProgressIndicator(strokeWidth: 2,color: Colors.orange,),
+                                                    ),
+                                                  )
+
+
                                               ),
                                               decoration: BoxDecoration(
                                                 borderRadius:
@@ -1668,17 +1688,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                   borderRadius: BorderRadius.circular(15),
                                   child: GoogleMap(
                                     initialCameraPosition: CameraPosition(
-                                      target: LatLng(
-                                          double.parse(eventDetailsController
-                                                  .eventInfo
-                                                  ?.eventData
-                                                  .eventLatitude ??
-                                              "0"),
-                                          double.parse(eventDetailsController
-                                                  .eventInfo
-                                                  ?.eventData
-                                                  .eventLongtitude ??
-                                              "0")), //initial position
+                                      target: LatLng(lat,lng), //initial position
                                       zoom: 10.0, //initial zoom level
                                     ),
                                     markers: Set<Marker>.of(_markers),
@@ -1786,6 +1796,16 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
       await launch(googleUrl);
     } else {
       throw 'Could not open the map.';
+    }
+  }
+  double safeParse(String? value, double fallback) {
+    try {
+      if (value == null || value.trim().isEmpty || value == "null") {
+        return fallback;
+      }
+      return double.parse(value);
+    } catch (e) {
+      return fallback;
     }
   }
 

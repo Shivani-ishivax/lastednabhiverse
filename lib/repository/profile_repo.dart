@@ -5,7 +5,8 @@ import 'package:magicmate_user/model/userprofile/UserProfileModel.dart';
 import 'package:magicmate_user/screen/utils/Urls.dart';
 
 
-class ProfileRepository{
+class ProfileRepository {
+
   final _apiService  = NetWorkApiService();
   Future<ProfileUpdateModel> userDeleteProfile(data) async {
     dynamic response = await _apiService.postApi(data,AppUrls.deleteAccount_url);

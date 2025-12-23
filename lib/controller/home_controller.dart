@@ -52,9 +52,6 @@ class HomePageController extends GetxController implements GetxService {
   }
   //event url
 
-
-
-
   void getDynamicUrl() async {
     final headers = {
       'Content-Type': 'application/json',
@@ -116,6 +113,7 @@ class HomePageController extends GetxController implements GetxService {
           mapInfo.add(MapInfo.fromJson(element));
         }
         homeInfo = HomeInfo.fromJson(result);
+        update();
         var maplist = mapInfo.reversed.toList();
         print(":::MMM:::::::________::::::::::" + result.toString());
         for (var i = 0; i < maplist.length; i++) {
@@ -129,8 +127,7 @@ class HomePageController extends GetxController implements GetxService {
               ),
               icon: BitmapDescriptor.fromBytes(markIcon),
               onTap: () {
-                pageController.animateToPage(i,
-                    duration: Duration(seconds: 1), curve: Curves.decelerate);
+                pageController.animateToPage(i, duration: Duration(seconds: 1), curve: Curves.decelerate);
                 update();
               },
               infoWindow: InfoWindow(

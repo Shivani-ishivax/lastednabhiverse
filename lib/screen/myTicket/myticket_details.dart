@@ -80,8 +80,7 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
               : myBookingController.status == "Past"
                   ? myBookingController.myTicketInfo?.ticketData?.ticketRate !=
                               "1" &&
-                          myBookingController
-                                  .myTicketInfo!.ticketData!.ticketStatus !=
+                          myBookingController.myTicketInfo?.ticketData!.ticketStatus !=
                               "Cancelled"
                       ? GestButton(
                           height: 50,
@@ -325,7 +324,7 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
                                     title:
                                         "${myBookingController.myTicketInfo?.ticketData?.totalTicket} ${"Seats".tr}",
                                     subtitle:
-                                        "${currency}${myBookingController.myTicketInfo?.ticketData?.ticketSubtotal}"),
+                                        "${myBookingController.myTicketInfo?.ticketData?.ticketSubtotal}"),
                                 ticketText(
                                     title: "Tax".tr,
                                     subtitle:
@@ -348,9 +347,7 @@ class _MyTicketDetailsScreenState extends State<MyTicketDetailsScreen> {
                                     : SizedBox(),
                                 ticketText(
                                     title: "Total".tr,
-                                    subtitle: currency +
-                                        myBookingController.myTicketInfo
-                                            ?.ticketData?.ticketTotalAmt),
+                                    subtitle: "${currency}${myBookingController.myTicketInfo?.ticketData?.ticketTotalAmt}"),
                                 ticketText(
                                     title: "Payment Method".tr,
                                     subtitle: myBookingController.myTicketInfo

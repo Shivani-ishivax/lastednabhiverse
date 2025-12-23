@@ -55,7 +55,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   CouponController couponController = Get.find();
   HomePageController homePageController = Get.find();
   WalletController walletController = Get.find();
-  String couponCode = "";
+  String couponCode = "23333";
   bool status = false;
   var subtotal = Get.arguments["total"];
 
@@ -333,7 +333,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                 height: 4,
                                               ),
                                               couponCode != ""
-                                                  ? Row(
+                                                  ?
+                                              Row(
                                                       children: [
                                                         Text(
                                                           "Use code:".tr,

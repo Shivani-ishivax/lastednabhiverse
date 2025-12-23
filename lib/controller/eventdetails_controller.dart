@@ -86,6 +86,7 @@ class EventDetailsController extends GetxController implements GetxService {
           menberList.add("${Config.imageUrl}" + element);
         }
         eventInfo = EventInfo.fromJson(result);
+        print("fhgfgfghh${eventInfo?.eventData.toString()}");
       }
       isLoading = true;
       update();
@@ -121,7 +122,11 @@ class EventDetailsController extends GetxController implements GetxService {
         print("sucess");
         var result = jsonDecode(response.body);
         ticketInfo = TicketInfo.fromJson(result);
+        // mTotal = double.parse((ticketInfo?.eventTypePrice.first.ticketPrice).toString());
+        // totalTicket = 1;
+        // ticketCount[0] = 1;
 
+        update();
         print("sucess${ticketInfo?.eventTypePrice.first.ticketPrice.toString()}");
       }
       else

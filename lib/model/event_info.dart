@@ -105,7 +105,7 @@ class EventData {
   int isBookmark;
   String sponsoreId;
   String sponsoreImg;
-  String sponsoreName;
+  String sponsoreName ;
   String sponsoreMobile;
   int totalTicket;
   int isJoined;

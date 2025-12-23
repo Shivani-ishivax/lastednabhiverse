@@ -22,9 +22,17 @@ class FaqController extends GetxController implements GetxService {
       Map map = {
         "uid":userData?.loginid.toString(),
       };
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+
+      };
       Uri uri = Uri.parse(Config.baseurl + Config.faqApi);
       var response = await http.post(
         uri,
+        headers: headers,
         body: jsonEncode(map),
       );
       print(map);

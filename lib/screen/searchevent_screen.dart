@@ -1,5 +1,6 @@
 // ignore_for_file: sort_child_properties_last, prefer_const_constructors
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -126,17 +127,23 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(15),
-                                          child: FadeInImage.assetNetwork(
-                                            placeholder:
-                                                "assets/ezgif.com-crop.gif",
+                                          child: CachedNetworkImage(
+                                            imageUrl: "${Config.imageUrl}${searchController.searchInfo[index].eventImg}",
+                                            httpHeaders: {
+                                              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                              'Accept': 'image/*',
+                                              'Connection': 'keep-alive',
+                                            },
                                             height: 120,
                                             width: 100,
-                                            placeholderCacheHeight: 120,
-                                            placeholderCacheWidth: 100,
-                                            image:
-                                                "${Config.imageUrl}${searchController.searchInfo[index].eventImg}",
                                             fit: BoxFit.cover,
+                                            placeholder: (context, url) => SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(strokeWidth: 2),
+                                            ),
                                           ),
+
                                         ),
                                       ),
                                       SizedBox(

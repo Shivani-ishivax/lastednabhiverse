@@ -241,6 +241,7 @@ class _MyTicketScreenState extends State<MyTicketScreen>
                             bgColor: gradient.defoultColor,
                             titleColor: Colors.white,
                             ontap: () {
+                              print("fgahdfgj");
                               myBookingController.cancleOrder(
                                 orderId1: orderId,
                                 reason: rejectmsg == "Others".tr
@@ -640,15 +641,30 @@ class _MyTicketScreenState extends State<MyTicketScreen>
                                       width: 90,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(15),
-                                        child: FadeInImage.assetNetwork(
-                                          placeholder:
-                                              "assets/ezgif.com-crop.gif",
-                                          image:
-                                              "${Config.imageUrl}${myBookingController.orderInfo?.orderData[index].eventImg}",
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                          "${Config.imageUrl}${myBookingController.orderInfo?.orderData[index].eventImg}",
+                                          httpHeaders: {
+                                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                            'Accept': 'image/*',
+                                            'Connection': 'keep-alive',
+                                          },
+                                          fit: BoxFit.cover,
                                           height: 90,
                                           width: 90,
-                                          fit: BoxFit.cover,
+
+                                          // Placeholder (your GIF or loader)
+                                          placeholder: (context, url) => Image.asset(
+                                            "assets/ezgif.com-crop.gif",
+                                            fit: BoxFit.cover,
+                                            height: 90,
+                                            width: 90,
+                                          ),
+
+                                          // Error image
+                                          errorWidget: (context, url, error) => Icon(Icons.error),
                                         ),
+
                                       ),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(15),

@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, sized_box_for_whitespace, prefer_typing_uninitialized_variables, unnecessary_brace_in_string_interps, must_be_immutable, prefer_interpolation_to_compose_strings, avoid_print
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:magicmate_user/Api/config.dart';
 
 import '../controller/eventdetails_controller.dart';
 import '../helpar/routes_helpar.dart';
@@ -22,8 +24,8 @@ var eIndex;
 class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
   EventDetailsController eventDetailsController = Get.find();
   var total = 0.0;
-  int totalTicket = 0;
-  int currentIndex = 0;
+
+
   @override
   void initState() {
     super.initState();
@@ -118,7 +120,8 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                           );
                         },
                       ),
-                    )
+                    ),
+
                   ],
                 ),
               )
@@ -149,47 +152,80 @@ class _ListOfCounterState extends State<ListOfCounter> {
   Widget build(BuildContext context) {
     return GetBuilder<EventDetailsController>(builder: (context) {
       return Container(
-        height: 120,
+        height: 160,
         width: Get.size.width,
         margin: EdgeInsets.symmetric(vertical: 8),
         child: Row(
           children: [
-            ClipPath(
-              clipper: OvalRightBorderClipper(),
-              child: Container(
-                height: 120,
-                width: 80,
-                alignment: Alignment.center,
-                child: Text(
-                  preIndex == widget.index
-                      ? eventDetailsController.totalTicket.toString()
-                      : "0",
-                  style: TextStyle(
-                    fontFamily: FontFamily.gilroyBold,
-                    fontSize: 25,
-                    color: eventDetailsController.totalTicket.toString() != "0"
-                        ? preIndex != widget.index
-                            ? BlackColor
-                            : WhiteColor
-                        : BlackColor,
-                  ),
-                ),
-                decoration: BoxDecoration(
-                  color: eventDetailsController.totalTicket.toString() != "0"
-                      ? preIndex != widget.index
-                          ? Colors.grey.shade200
-                          : gradient.defoultColor
-                      : Colors.grey.shade200,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    bottomLeft: Radius.circular(15),
-                  ),
+            Container(
+              height: 120,
+              width: 100,
+              margin: EdgeInsets.all(8),
+              alignment: Alignment.center,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: CachedNetworkImage(
+                  imageUrl:
+                  "${Config.imageUrl}${eventDetailsController.eventInfo?.eventData.eventImg ?? ""}",
+
+                  httpHeaders: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                    'Accept': 'image/*',
+                    'Connection': 'keep-alive',
+                  },
+
+                  height: 120,
+                  width: 100,
+                  fit: BoxFit.cover,
+
+                  placeholder: (context, url) =>
+                      Image.asset("assets/ezgif.com-crop.gif", fit: BoxFit.cover),
+
+                  errorWidget: (context, url, error) => Icon(Icons.error, size: 35),
+
+                  fadeInDuration: Duration(milliseconds: 400),
                 ),
               ),
             ),
             SizedBox(
-              width: 8,
+              width: 5,
             ),
+            // ClipPath(
+            //   clipper: OvalRightBorderClipper(),
+            //   child: Container(
+            //     height: 160,
+            //     width: 80,
+            //     alignment: Alignment.center,
+            //     child: Text(
+            //       preIndex == widget.index
+            //           ? eventDetailsController.totalTicket.toString()
+            //           : "0",
+            //       style: TextStyle(
+            //         fontFamily: FontFamily.gilroyBold,
+            //         fontSize: 25,
+            //         color: eventDetailsController.totalTicket.toString() != "0"
+            //             ? preIndex != widget.index
+            //                 ? BlackColor
+            //                 : WhiteColor
+            //             : BlackColor,
+            //       ),
+            //     ),
+            //     decoration: BoxDecoration(
+            //       color: eventDetailsController.totalTicket.toString() != "0"
+            //           ? preIndex != widget.index
+            //               ? Colors.grey.shade200
+            //               : gradient.defoultColor
+            //           : Colors.grey.shade200,
+            //       borderRadius: BorderRadius.only(
+            //         topLeft: Radius.circular(15),
+            //         bottomLeft: Radius.circular(15),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // SizedBox(
+            //   width: 8,
+            // ),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

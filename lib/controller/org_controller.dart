@@ -63,7 +63,7 @@ class OrgController extends GetxController implements GetxService {
       Map map = {
         "event_id": eventId,
       };
-      print("-----======-----" + map.toString());
+      print("-----joinseeeeee======-----" + map.toString());
       Uri uri = Uri.parse(Config.baseurl + Config.joinUserList);
       var response = await http.post(
         uri,

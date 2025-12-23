@@ -80,8 +80,8 @@ class _BottomBarScreenState extends State<BottomBarScreen> with WidgetsBindingOb
   }
 
   void _updateUserStatus(bool isOnline) {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.updateUserStatus(isLogin != null ? getData.read("UserLogin")["id"] : "0", isOnline);
+    // final userProvider = Provider.of<UserProvider>(context, listen: false);
+    // userProvider.updateUserStatus(isLogin != null ? getData.read("UserLogin")["id"] : "0", isOnline);
   }
 
   @override

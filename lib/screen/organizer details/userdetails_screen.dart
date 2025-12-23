@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last, sized_box_for_whitespace
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../Api/config.dart';
@@ -57,15 +58,25 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                               width: 50,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(40),
-                                child: FadeInImage.assetNetwork(
-                                  placeholder: "assets/ezgif.com-crop.gif",
-                                  height: 50,
-                                  width: 50,
-                                  image:
-                                      "${Config.imageUrl}${orgController.userInfo?.joinedUserdata[index].userImg ?? ""}",
-                                  placeholderFit: BoxFit.cover,
-                                  fit: BoxFit.cover,
-                                ),
+                                child: CachedNetworkImage(
+                                    imageUrl:  "${Config.imageUrl}${orgController.userInfo?.joinedUserdata[index].userImg ?? ""}",
+                                    httpHeaders: {
+                                      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                      'Accept': 'image/*',
+                                      'Connection': 'keep-alive',
+                                    },
+                                    height: 50,
+                                    width: 50,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => SizedBox(
+                                      height: 10,
+                                      width: 10,
+                                      child: CircularProgressIndicator(strokeWidth: 2,color: Colors.orange,),
+                                    ),
+                                  )
+
+
+
                               ),
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.grey.shade200),

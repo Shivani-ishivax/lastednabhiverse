@@ -75,16 +75,23 @@ class _GalleryViewState extends State<GalleryView> {
                   width: 100,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: FadeInImage.assetNetwork(
-                      placeholder: "assets/ezgif.com-crop.gif",
-                      placeholderCacheHeight: 100,
-                      placeholderCacheWidth: 100,
-                      placeholderFit: BoxFit.cover,
-                      height: 100,
-                      width: 100,
-                      image: Config.imageUrl + eventDetailsController.eventInfo!.eventGallery[index],
-                      fit: BoxFit.cover,
-                    ),
+                    child: CachedNetworkImage(
+                        imageUrl:  Config.imageUrl + eventDetailsController.eventInfo!.eventGallery[index],
+                        httpHeaders: {
+                          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                          'Accept': 'image/*',
+                          'Connection': 'keep-alive',
+                        },
+                        height: 100,
+                        width: 100,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => SizedBox(
+                          height: 10,
+                          width: 10,
+                          child: CircularProgressIndicator(strokeWidth: 2,color: Colors.orange,),
+                        ),
+                      )
+
                   ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),

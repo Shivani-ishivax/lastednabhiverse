@@ -15,8 +15,14 @@ class MsgOtpController extends GetxController implements GetxService {
     Map body = {
       "mobile": mobile
     };
-    Map<String, String> userHeader = {"Content-type": "application/json", "Accept": "application/json"};
-    var response = await http.post(Uri.parse(Config.baseurl + Config.msgOtp),body: jsonEncode(body),headers: userHeader);
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Connection': 'keep-alive',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+
+    };
+    var response = await http.post(Uri.parse(Config.baseurl + Config.msgOtp),body: jsonEncode(body),headers: headers);
 
     print("+++++++ ${response.body}");
     print("----- ${body}");

@@ -53,7 +53,7 @@ class BookEventController extends GetxController implements GetxService {
         "tax": tax,
         "cou_amt": couAmt,
         "total_amt": totalAmt,
-        "wall_amt": wallAmt,
+        "wall_amt": "0.0",
         "p_method_id": pMethodId,
         "transaction_id": otid,
         "plimit": pLimit,

@@ -21,6 +21,7 @@ import '../controller/login_controller.dart';
 import '../firebase_accesstoken.dart';
 import '../helpar/routes_helpar.dart';
 import '../model/fontfamily_model.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import '../utils/Colors.dart';
 
 
@@ -31,7 +32,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-var currency;
+var currency="Rs";
 var wallet1;
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -41,6 +42,10 @@ class _HomeScreenState extends State<HomeScreen> {
   String? networkimage;
   String userName = "";
   String? base64Image;
+
+  List<String> bannerImages = [];
+
+
 
   ScrollController? _scrollController;
   bool lastStatus = true;
@@ -60,10 +65,35 @@ class _HomeScreenState extends State<HomeScreen> {
         _scrollController!.offset > (height - kToolbarHeight);
   }
 
+
+  Future<void> fetchBanners() async {
+    const String apiUrl = "https://yblapis.ganpatigroupbharat.com/api/yclBanner/getYclBannerDetail";
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        setState(() {
+          bannerImages = List<String>.from(
+            jsonData["data"].map((item) => item["webBannerUrl"]),
+          );
+
+          print("bannerImages=============${bannerImages}");
+        });
+      } else {
+        throw Exception("Failed to load banners");
+      }
+    } catch (e) {
+      print("API Error: $e");
+
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController()..addListener(_scrollListener);
+    fetchBanners();
     getData.read("UserLogin") != null
         ? setState(() {
             userName = getData.read("UserLogin")["name"] ?? "";
@@ -75,9 +105,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 : const SizedBox();
           })
         : null;
+
   }
 
-  networkimageconvert() {
+ void networkimageconvert() {
     (() async {
       final headers = {
         'Content-Type': 'application/json',
@@ -106,15 +137,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: bgcolor,
       body: GetBuilder<HomePageController>(builder: (homePageController) {
-        return homePageController.isLoading
-            ? NestedScrollView(
+        return NestedScrollView(
                 controller: _scrollController,
                 headerSliverBuilder: (context, innerBoxIsScrolled) {
                   return [
                     SliverAppBar(
                       elevation: 0,
                       pinned: true,
-                      expandedHeight: Get.size.height * 0.34,
+                      expandedHeight: Get.size.height * 0.50,
                       titleSpacing: 0,
                       backgroundColor:
                           _isShrink ? ColorHelperClass.getColorFromHex(ColorResources.primary_color) : transparent,
@@ -230,12 +260,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 SizedBox(
                                   height: Get.size.height * 0.025,
                                 ),
+
+
+
                                 Container(
                                   height: 35,
                                   width: Get.size.width,
                                   alignment: Alignment.center,
-                                  child:
-                                  homePageController.homeInfo!.homeData.catlist.isNotEmpty
+                                  child: ( homePageController.homeInfo?.homeData.catlist ?? []).isNotEmpty
                                       ? ListView.separated(
                                     separatorBuilder: (context, index) =>
                                         SizedBox(
@@ -319,7 +351,54 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ],
                                     ),
                                   ),
+                                ),
+                                SizedBox(
+                                  height: Get.size.height * 0.025,
+                                ),
+                                Container(
+                                  width: Get.size.width,
+                                  height: 150,
+
+                                    child:   bannerImages.isEmpty
+                                      ? Center(child: Text("No banners found"))
+                                      : CarouselSlider(
+                                    options: CarouselOptions(
+                                      height: 150,
+                                      autoPlay: true,
+                                      viewportFraction: 1,
+                                      enlargeCenterPage: false,
+                                    ),
+                                    items: bannerImages.map((url) {
+                                      return ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: CachedNetworkImage(
+                                            imageUrl: url,
+                                          httpHeaders: {
+                                              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                                              'Accept': 'image/*',
+                                              'Connection': 'keep-alive',
+                                            },
+
+                                            width: double.infinity,
+                                            fit: BoxFit.fitWidth,
+                                            placeholder: (context, url) => Image.asset(
+                                              "assets/ezgif.com-crop.gif",
+                                              height: 120,
+                                              width: 100,
+                                              fit: BoxFit.cover,
+                                            ),
+
+                                            errorWidget: (context, url, error) => Icon(Icons.error, size: 40),
+                                          )
+
+
+                                      );
+                                    }).toList(),
+                                  ),
                                 )
+
+
+
                               ],
                             ),
                           ),
@@ -385,7 +464,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             ),
-                      homePageController.homeInfo!.homeData.latestEvent.isNotEmpty
+                      (homePageController.homeInfo?.homeData?.latestEvent ?? []).isNotEmpty
                           ? SizedBox(
                               height: 320,
                               width: Get.size.width,
@@ -656,7 +735,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             ),
-                      homePageController.homeInfo!.homeData.nearbyEvent.isNotEmpty
+                      ( homePageController.homeInfo?.homeData.nearbyEvent ?? []).isNotEmpty
                           ? Container(
                               height: Get.height * 0.34,
                               width: Get.size.width,
@@ -893,7 +972,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             ),
-                      homePageController.homeInfo!.homeData.thisMonthEvent.isNotEmpty
+                      ( homePageController.homeInfo?.homeData.thisMonthEvent ?? []).isNotEmpty
                           ? SizedBox(
                               height: Get.height * 0.34,
                               width: Get.size.width,
@@ -1143,7 +1222,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             ),
-                      homePageController.homeInfo!.homeData.upcomingEvent.isNotEmpty
+                      ( homePageController.homeInfo?.homeData.upcomingEvent ?? []).isNotEmpty
                           ? ListView.builder(
                               itemCount: homePageController
                                   .homeInfo?.homeData.upcomingEvent.length
@@ -1371,12 +1450,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-              )
-            : Center(
-                child: CircularProgressIndicator(
-                  color: gradient.defoultColor,
-                ),
               );
+
       }),
     );
 

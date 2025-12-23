@@ -27,8 +27,9 @@ class CouponController extends GetxController implements GetxService {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
 
       };
+      LoginUser? userData = await SessionManager.getSession();
       Map map = {
-        "uid": getData.read("UserLogin")["id"],
+        "uid": userData?.loginid.toString(),
         "sponsore_id": sponsoreID,
       };
       Uri uri = Uri.parse(Config.baseurl + Config.couponlist);
